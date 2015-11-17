@@ -1,13 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
-	public enum AxisDirection {
+ 
+    public enum AxisDirection {
 		up, down, left, right
 	}
+
+    public static class AxisDirectionExtensions {
+        public static AxisDirection back(this AxisDirection dir) {
+            switch (dir) {
+                case AxisDirection.down: return AxisDirection.up;
+                case AxisDirection.left: return AxisDirection.right;
+                case AxisDirection.right: return AxisDirection.left;
+                case AxisDirection.up: return AxisDirection.down;
+                default: return AxisDirection.down;
+            }
+        }
+    }
 
     public struct Vector {
 		
@@ -20,19 +30,25 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
         }
 
 		Vector(AxisDirection dir) {
+            this.x = 0;
+            this.y = 0;
 			switch (dir) {
 			case AxisDirection.down:
-				this = Vector.down;
+				this.x = Vector.down.x;
+                this.y = Vector.down.y;
 				break;
 			case AxisDirection.left:
-				this = Vector.left;
-				break;
+                this.x = Vector.left.x;
+                this.y = Vector.left.y;
+                break;
 			case AxisDirection.right:
-				this = Vector.right;
-				break;
+                this.x = Vector.right.x;
+                this.y = Vector.right.y;
+                break;
 			case AxisDirection.up:
-				this = Vector.up;
-				break;
+                this.x = Vector.up.x;
+                this.y = Vector.up.y;
+                break;
 			}
 		}
 
@@ -82,7 +98,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public static Vector left = new Vector(-1, 0);
 		public static Vector right = new Vector(1, 0);
 
-		public static bool operator == (Vector a, Vector b) {
+		public static bool Equals(Vector a, Vector b) {
 			const double E = 0.0001;
 
 			return Math.Abs(a.x - b.x) < E && Math.Abs(a.y - b.y) < E;
