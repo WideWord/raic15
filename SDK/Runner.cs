@@ -14,6 +14,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
         }
 
         private Runner(string[] args) {
+
+			try {
+				Debug.connect(args[0], 13579);
+			} catch (System.Exception e) {
+				System.Console.Write("sheeit " + e.Message);
+			}
+
             remoteProcessClient = new RemoteProcessClient(args[0], int.Parse(args[1]));
             token = args[2];
         }

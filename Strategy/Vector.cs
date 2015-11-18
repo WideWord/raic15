@@ -24,12 +24,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public double x { get; private set; }
 		public double y { get; private set; }
 
-        Vector(double _x, double _y) {
+		public Vector(double _x, double _y) {
             x = _x;
             y = _y;
         }
 
-		Vector(AxisDirection dir) {
+		public Vector(AxisDirection dir) {
             this.x = 0;
             this.y = 0;
 			switch (dir) {

@@ -4,43 +4,20 @@ using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 
-    public sealed class MyStrategy : IStrategy
-    {
+    public sealed class MyStrategy : IStrategy {
 
-        public void Move(Car self, World world, Game game, Move move)
-        {
-            int nextWaypoint = self.NextWaypointIndex;          
+		private bool showed = false;
 
-            double x = self.NextWaypointX * game.TrackTileSize + game.TrackTileSize / 2;
-            double y = self.NextWaypointY * game.TrackTileSize + game.TrackTileSize / 2;
+        public void Move(Car self, World world, Game game, Move move) {
+			if (!showed) {
+				Debug.beginPre();
+				Debug.circle(new Vector(self.X, self.Y), 20, 0xFF0000);
+				Debug.endPre();
 
-            double angleToNextWaypoint = self.GetAngleTo(x, y);
+				showed = true;
+			}
 
-            double speed = Math.Sqrt(Math.Pow(self.SpeedX, 2) * Math.Pow(self.SpeedY, 2));
-
-            if (angleToNextWaypoint > Math.PI * 0.25 && speed > 20)
-            {
-                move.IsBrake = true;
-            }
-            else
-            {
-                move.IsBrake = false;
-            }
-
-            move.WheelTurn = angleToNextWaypoint;
-
-            if (speed < 25)
-            {
-                move.EnginePower = 1;
-            }
-            else
-            {
-                move.EnginePower = 0;
-            }
         }
-
-
-
     }
 
 

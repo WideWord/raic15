@@ -84,10 +84,11 @@
     <Compile Include="SDK\IStrategy.cs" />
     <Compile Include="Strategy\MyStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SDK\RemoteProcessClient.cs" />
     <Compile Include="SDK\Runner.cs" />
+    <Compile Include="SDK\RemoteProcessClient.cs" />
     <Compile Include="Strategy\Tile.cs" />
     <Compile Include="Strategy\Vector.cs" />
+    <Compile Include="Strategy\Debug.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
