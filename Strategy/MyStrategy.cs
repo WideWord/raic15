@@ -8,6 +8,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
     public sealed class MyStrategy : IStrategy {
 
 		private Vehicle vehicle = new Vehicle();
+		private PathNavigator navigator;
+
 		private LinkedList<PathUtil.PathNode> path; 
 
 		private RoadMap map;
@@ -24,8 +26,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			if (path == null) {
 				path = PathUtil.buildSmoothPath(PathUtil.findPathFromWaypoints(world.Waypoints, map, vehicle.position));
+				navigator = new PathNavigator(path);
 			}
+				
 			PathUtil.drawPath(path, 0xFF0000);
+
+			var nextPoint = navigator.nextPoint(vehicle);
+			Debug.fillCircle(nextPoint, 25, 0xFFFF00);
+
+			move.EnginePower = 0.7;
+
+			move.WheelTurn = self.GetAngleTo(nextPoint.x, nextPoint.y);
 
 			Debug.endPost();
         }

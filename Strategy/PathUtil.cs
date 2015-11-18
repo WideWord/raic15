@@ -74,7 +74,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 			var lastTile = roadMap.tileAt(startPosition);
 
-			for (int i = 1, iend = waypoints.Length * 2; i < iend; ++i) {
+			for (int i = 1, iend = waypoints.Length * 2 + 1; i < iend; ++i) {
 				var currentTile = roadMap.tileAt(waypoints[i % waypoints.Length][0], waypoints[i % waypoints.Length][1]);
 
 				var mpath = findPathBetween(lastTile, currentTile); 
@@ -84,7 +84,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				}
 
 				var lastNode = path.Last.Value;
-				lastNode.waypointIndex = i;
+				lastNode.waypointIndex = i % waypoints.Length;
 				path.Last.Value = lastNode;
 
 				lastTile = currentTile;
@@ -145,7 +145,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			foreach (var point in path) {
 				Debug.fillCircle(point.position, 25, 0xFF0000);
 				if (point.waypointIndex != -1) {
-					Debug.print(point.position + new Vector (50, 50), "" + point.waypointIndex, 0xFF0000);
+					Debug.print(point.position + new Vector(50, 50), "" + point.waypointIndex, 0xFF0000);
 				}
 
 				Debug.line(lastPoint.position, point.position, 0xFF0000);
