@@ -7,7 +7,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public static double turningSmoothCoef {
 			get {
-				return 0.7;
+				return 0.5;
 			}
 		}
 

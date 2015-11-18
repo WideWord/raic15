@@ -13,7 +13,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		private static StreamWriter writer;
 
 		public static void connect(string host, int port) {
-			//client = new TcpClient(host, port);
+			client = new TcpClient(host, port);
 		}
 
 		public static void disconnect() {

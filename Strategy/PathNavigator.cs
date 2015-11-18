@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
 
+
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public class PathNavigator {
