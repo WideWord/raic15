@@ -115,6 +115,18 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
+		public struct CollisionResult {
+			Vector collisionPoint;
+			double collisionDistance;
+			double collisionAngle;
+		}
+
+		public CollisionResult? raycastWithWalls(Ray ray) {
+
+		}
+
+		
+
 	}
 
 }
