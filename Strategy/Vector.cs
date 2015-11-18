@@ -52,6 +52,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public static Vector fromAngle(double angle) {
+			return new Vector(Math.Cos(angle), Math.Sin(angle));
+		}
+
 		public AxisDirection direction {
 			get {
 				if (this * Vector.up >= 0.5) return AxisDirection.up;

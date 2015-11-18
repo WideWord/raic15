@@ -6,10 +6,19 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 	public class Tile {
 		public TileType type = TileType.Unknown;
-		private RoadMap roadMap;
+		public RoadMap roadMap { get; private set; }
 
 		public int posX { get; private set; }
 		public int posY { get; private set; }
+
+		public Vector center {
+			get {
+				return new Vector (
+					posX * Constants.tileSize + Constants.tileSize * 0.5,
+					posY * Constants.tileSize + Constants.tileSize * 0.5
+				);
+			}
+		}
 
 		public Tile(RoadMap roadMap, int posX, int posY) {
 			this.posX = posX;
@@ -24,8 +33,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				case TileType.BottomHeadedT:
 				case TileType.Empty:
 				case TileType.Horizontal:
-				case TileType.LeftTopCorner:
-				case TileType.RightTopCorner:
+				case TileType.LeftBottomCorner:
+				case TileType.RightBottomCorner:
 				case TileType.Unknown:
 					return false;
 				default:
@@ -37,8 +46,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				case TileType.Empty:
 				case TileType.Unknown:
 				case TileType.Horizontal:
-				case TileType.LeftBottomCorner:
-				case TileType.RightBottomCorner:
+				case TileType.LeftTopCorner:
+				case TileType.RightTopCorner:
 					return false;
 				default:
 					return true;
@@ -50,8 +59,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				case TileType.Unknown:
 				case TileType.LeftHeadedT:
 				case TileType.Vertical:
-				case TileType.RightTopCorner:
-				case TileType.RightBottomCorner:
+				case TileType.LeftTopCorner:
+				case TileType.LeftBottomCorner:
 					return false;
 				default:
 					return true;
@@ -62,8 +71,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				case TileType.Unknown:
 				case TileType.RightHeadedT:
 				case TileType.Vertical:
-				case TileType.LeftTopCorner:
-				case TileType.LeftBottomCorner:
+				case TileType.RightTopCorner:
+				case TileType.RightBottomCorner:
 					return false;
 				default:
 					return true;

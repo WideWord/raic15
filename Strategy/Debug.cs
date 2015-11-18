@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
+	// цвет нужно задавать hex-числом, например 0xABCDEF, AB - red, CD - green, EF - blue, каждый цвет - число из двух hex-цифр в диапазоне от 00 до FF
 
 	public struct Debug {
 		
@@ -50,15 +51,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			int green = (color & 0x00FF00) >> 8;
 			int blue = color & 0x0000FF;
 
-			return String.Format("{0:0.0####} {1:0.0####} {2:0.0####}", (double)red / 256.0, (double)green / 256.0, (double)blue / 256.0);
+			return String.Format("{0} {1} {2}", (double)red / 256.0, (double)green / 256.0, (double)blue / 256.0);
 		}
 
 		private static string encodeVector(Vector vec) {
-			return String.Format("{0:0.0####} {1:0.0####}", vec.x, vec.y);
+			return String.Format("{0} {1}", vec.x, vec.y);
 		}
 
 		public static void circle(Vector position, double radius, int color) {
-			sendCommand(String.Format("circle {0} {1:0.0####} {2}", encodeVector(position), radius, encodeColor(color)));
+			sendCommand(String.Format("circle {0} {1} {2}", encodeVector(position), radius, encodeColor(color)));
 		}
 
 		public static void fillCircle(Vector position, double radius, int color) {
