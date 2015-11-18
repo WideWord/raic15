@@ -96,6 +96,25 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return null;
 		}
 
+		public AxisDirection? directionForTile(Tile tile) {
+			if (tile.posX == posX) {
+				if (tile.posY > posY)
+					return AxisDirection.down;
+				else if (tile.posY < posY)
+					return AxisDirection.up;
+				else
+					return null;
+			} else if (tile.posY == posY) {
+				if (tile.posX > posX)
+					return AxisDirection.right;
+				else if (tile.posX < posX)
+					return AxisDirection.left;
+				else
+					return null;
+			} else
+				return null;
+		}
+
 	}
 
 }

@@ -17,6 +17,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
                 default: return AxisDirection.down;
             }
         }
+
+		public static bool isSameAxis(this AxisDirection a, AxisDirection b) {
+			if (a == AxisDirection.left || a == AxisDirection.right) {
+				return b == AxisDirection.right || b == AxisDirection.left;
+			} else {
+				return b == AxisDirection.up || b == AxisDirection.down;
+			}
+		}
     }
 
     public struct Vector {

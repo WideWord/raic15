@@ -74,8 +74,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 			var lastTile = roadMap.tileAt(startPosition);
 
-			for (int i = 1, iend = waypoints.Length; i < iend; ++i) {
-				var currentTile = roadMap.tileAt(waypoints[i][0], waypoints[i][1]);
+			for (int i = 1, iend = waypoints.Length * 2; i < iend; ++i) {
+				var currentTile = roadMap.tileAt(waypoints[i % waypoints.Length][0], waypoints[i % waypoints.Length][1]);
 
 				var mpath = findPathBetween(lastTile, currentTile); 
 
@@ -110,8 +110,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 			var path = new LinkedList<PathNode>();
 
-			foreach (var tilePathNode in tilePath) {
-				path.AddLast(new PathNode(tilePathNode.tile.center, tilePathNode.waypointIndex));
+			var currentTileNode = tilePath.First;
+
+			while (currentTileNode != null) {
+				var currentTile = currentTileNode.Value.tile;
+
+				var position = currentTile.center;
+
+				if (currentTileNode.Previous != null && currentTileNode.Next != null) {
+					var nextTile = currentTileNode.Next.Value.tile;
+					var prevTile = currentTileNode.Previous.Value.tile;
+
+					var nextDir = currentTile.directionForTile(nextTile) ?? AxisDirection.up;
+					var prevDir = currentTile.directionForTile(prevTile) ?? AxisDirection.up;
+
+					if (!prevDir.isSameAxis(nextDir)) {
+						var offset = (new Vector(prevDir) + new Vector(nextDir)) * Constants.tileSize * 0.5 * Constants.turningSmoothCoef;
+
+						position = position + offset;
+					}
+				}
+
+				path.AddLast(new PathNode(position, currentTileNode.Value.waypointIndex));
+
+				currentTileNode = currentTileNode.Next;
 			}
 
 			return path;
