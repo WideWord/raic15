@@ -46,5 +46,35 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			return tileAt(x, y);
 		}
 
+		public Vector? intersect(Ray ray, bool debugDraw = false) {
+
+			var tile = tileAt(ray.position);
+			AxisDirection? lastDir = null;
+
+			while (true) {
+
+				if (debugDraw)
+					tile.draw(0x00FF00);
+
+				var intersection = tile.intersect(ray);
+
+				if (intersection != null) {
+					return intersection;
+				}
+
+				var dir = tile.rect.borderAnyIntersectionDirection(ray, lastDir);
+
+				if (dir == null)
+					return null;
+
+				tile = tile.nextTileInDirection(dir ?? AxisDirection.up);
+				if (tile == null)
+					return null;
+
+				lastDir = dir;
+
+			}
+		}
+
     }
 }

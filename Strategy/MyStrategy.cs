@@ -39,9 +39,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			move.WheelTurn = self.GetAngleTo(nextPoint.x, nextPoint.y);
 
 			{
-				var currentTile = map.tileAt(vehicle.position);
-
-				currentTile.intersect(vehicle.forwardRay);
+				map.intersect(vehicle.forwardRay * 500, true);
 			}
 
 			Debug.endPost();

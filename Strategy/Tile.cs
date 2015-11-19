@@ -20,6 +20,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
+		public Rect rect {
+			get {
+				var half = new Vector(Constants.tileSize / 2, Constants.tileSize / 2);
+				return new Rect(
+					center - half,
+					center + half
+				);
+			}
+		}
+
 		public Tile(RoadMap roadMap, int posX, int posY) {
 			this.posX = posX;
 			this.posY = posY;
@@ -224,6 +234,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 
 			return vec;
+		}
+
+		public void draw(int color) {
+			Debug.rect(rect.min, rect.max, color);
 		}
 	}
 

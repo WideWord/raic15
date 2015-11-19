@@ -167,7 +167,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		}
     }
 
-	public class Ray {
+	public struct Ray {
 
 		public Vector position { get; private set; }
 		public Vector direction { get; private set; }
@@ -191,6 +191,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public static Ray line(Vector p1, Vector p2) {
 			return new Ray(p1, p2 - p1);
+		}
+
+		public static Ray operator * (Ray a, double val) {
+			return new Ray(a.position, a.direction * val);
+		}
+
+		public static Ray operator * (double val, Ray a) {
+			return a * val;
 		}
 
 		public Vector? intersect(Ray o) {
@@ -231,7 +239,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	}
 
-	public class Arc {
+	public struct Arc {
 
 		public Vector position { get; private set; }
 		public double radius { get; private set; }
@@ -359,6 +367,34 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				Debug.line(lastPoint, point, color);
 				lastPoint = point;
 			}
+		}
+
+	}
+
+	public struct Rect {
+
+		public Vector min;
+		public Vector max;
+
+		public Rect(Vector a, Vector b) {
+			min = new Vector(Math.Min(a.x, b.x), Math.Min(a.y, b.y));
+			max = new Vector(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
+		}
+
+		public AxisDirection? borderAnyIntersectionDirection(Ray ray, AxisDirection? exceptDir = null) {
+			if (ray.intersect(new Ray(min, new Vector(min.x, max.y))) != null && exceptDir != AxisDirection.left) {
+				return AxisDirection.left;
+			}
+			if (ray.intersect(new Ray(min, new Vector(max.x, min.y))) != null && exceptDir != AxisDirection.up) {
+				return AxisDirection.up;
+			}
+			if (ray.intersect(new Ray(max, new Vector(min.x, max.y))) != null && exceptDir != AxisDirection.down) {
+				return AxisDirection.down;
+			}
+			if (ray.intersect(new Ray(max, new Vector(max.x, min.y))) != null && exceptDir != AxisDirection.right) {
+				return AxisDirection.right;
+			}
+			return null;
 		}
 
 	}
