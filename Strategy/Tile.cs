@@ -115,7 +115,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
-		public LinkedList<Vector> multiIntersect(Ray ray) {
+		public LinkedList<Vector> multiIntersect(Ray ray, bool debugDrawWalls = false) {
 
 			var intersections = new LinkedList<Vector>();
 
@@ -130,6 +130,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					);
 						
 					var sideIntersection = ray.intersect(side);
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
 
 					if (sideIntersection != null) {
 						intersections.AddLast(sideIntersection ?? new Vector());
@@ -143,6 +145,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.angle(), dir.angle());
 
+					if (debugDrawWalls)
+						arc.draw(0x00FF00);
+
 					var arcIntersections = arc.multiIntersect(ray);
 
 					if (arcIntersections != null) {
@@ -155,6 +160,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
 
 					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.back().angle(), dir.back().angle());
+					if (debugDrawWalls)
+						arc.draw(0x00FF00);
 
 					var arcIntersections = arc.multiIntersect(ray);
 
@@ -170,6 +177,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 					var side = new Ray(lineFrom, new Vector(nextDir.back()) * Constants.roadMargin * 2);
 
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
+
 					var sideIntersection = ray.intersect(side);
 
 					if (sideIntersection != null) {
@@ -181,6 +191,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					lineFrom = lineFrom - (new Vector(nextDir) * Constants.roadMargin);
 
 					var side = new Ray(lineFrom, new Vector(dir.back()) * Constants.roadMargin * 2);
+
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
 
 					var sideIntersection = ray.intersect(side);
 

@@ -22,6 +22,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				return Vector.fromAngle(car.Angle);
 			}
 		}
+
+		public Ray forwardRay {
+			get {
+				return new Ray(position, forward);
+			}
+		}
 	}
 }
 

@@ -51,8 +51,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public static double angle(this AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down: return Math.PI * 0.5;
-			case AxisDirection.left: return 0;
-			case AxisDirection.right: return Math.PI;
+			case AxisDirection.left: return Math.PI;
+			case AxisDirection.right: return 0;
 			case AxisDirection.up: return -Math.PI * 0.5;
 			default: return 0;
 			}
@@ -239,16 +239,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public double fromAngle { get; private set; }
 		public double toAngle { get; private set; }
 
-		public Arc(Vector position, double raduis, double fromAngle, double toAngle) {
+		public Arc(Vector position, double _raduis, double fromAngle, double toAngle) {
 			while (fromAngle > Math.PI)
-				fromAngle -= Math.PI;
-			while (fromAngle < Math.PI)
-				fromAngle += Math.PI;
+				fromAngle -= Math.PI * 2;
+			while (fromAngle < -Math.PI)
+				fromAngle += Math.PI * 2;
 
 			while (toAngle > Math.PI)
-				toAngle -= Math.PI;
-			while (toAngle < Math.PI)
-				toAngle += Math.PI;
+				toAngle -= Math.PI * 2;
+			while (toAngle < -Math.PI)
+				toAngle += Math.PI * 2;
+
+			this.position = position;
+			this.radius = _raduis;
+			this.fromAngle = fromAngle;
+			this.toAngle = toAngle;
 		}
 
 		public bool isPointInArcSector(Vector point) {
