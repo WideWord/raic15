@@ -1,6 +1,6 @@
 ﻿using System;
 using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
-
+using System.Collections.Generic;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
@@ -115,6 +115,58 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
+		public LinkedList<Vector> multiIntersect(Ray ray) {
+
+			var intersections = new LinkedList<Vector>();
+
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				if (!canGoInDirection(dir)) {
+
+					var sideCenter = center + new Vector(dir) * (Constants.tileSize - Constants.roadMargin);
+					var sideHalfLength = (Constants.tileSize - Constants.roadMargin * 2);
+					var side = Ray.line(
+						sideCenter + new Vector(dir.turnLeft()) * sideHalfLength, 
+						sideCenter + new Vector(dir.turnRight()) * sideHalfLength
+					);
+						
+					var sideIntersection = ray.intersect(side);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				}
+				/*
+				var nextDir = dir.turnLeft();
+
+				if (!canGoInDirection(dir) && !canGoInDirection(nextDir)) {
+
+
+
+				}*/
+			}
+
+			return intersections;
+		}
+
+		public Vector? intersect(Ray ray) {
+			var intersections = multiIntersect(ray);
+
+			if (intersections.Count == 0)
+				return null;
+
+			Vector? vec = null;
+			var dist = double.MaxValue;
+
+			foreach (var intersection in intersections) {
+				var curDist = (intersection - ray.position).length;
+				if (curDist < dist) {
+					dist = curDist;
+					vec = intersection;
+				}
+			}
+
+			return vec;
+		}
 	}
 
 }

@@ -8,6 +8,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	}
 
     public static class AxisDirectionExtensions {
+		
         public static AxisDirection back(this AxisDirection dir) {
             switch (dir) {
                 case AxisDirection.down: return AxisDirection.up;
@@ -17,6 +18,26 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
                 default: return AxisDirection.down;
             }
         }
+
+		public static AxisDirection turnLeft(this AxisDirection dir) {
+			switch (dir) {
+			case AxisDirection.down: return AxisDirection.right;
+			case AxisDirection.left: return AxisDirection.down;
+			case AxisDirection.right: return AxisDirection.up;
+			case AxisDirection.up: return AxisDirection.left;
+			default: return AxisDirection.down;
+			}
+		}
+
+		public static AxisDirection turnRight(this AxisDirection dir) {
+			switch (dir) {
+			case AxisDirection.down: return AxisDirection.left;
+			case AxisDirection.left: return AxisDirection.up;
+			case AxisDirection.right: return AxisDirection.down;
+			case AxisDirection.up: return AxisDirection.right;
+			default: return AxisDirection.down;
+			}
+		}
 
 		public static bool isSameAxis(this AxisDirection a, AxisDirection b) {
 			if (a == AxisDirection.left || a == AxisDirection.right) {
@@ -163,6 +184,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 			}
 		}
+
 	}
 
 }
