@@ -122,8 +122,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				if (!canGoInDirection(dir)) {
 
-					var sideCenter = center + new Vector(dir) * (Constants.tileSize - Constants.roadMargin);
-					var sideHalfLength = (Constants.tileSize - Constants.roadMargin * 2);
+					var sideCenter = center + new Vector(dir) * (Constants.tileSize * 0.5 - Constants.roadMargin);
+					var sideHalfLength = (Constants.tileSize * 0.5 - Constants.roadMargin * 2);
 					var side = Ray.line(
 						sideCenter + new Vector(dir.turnLeft()) * sideHalfLength, 
 						sideCenter + new Vector(dir.turnRight()) * sideHalfLength
@@ -135,14 +135,59 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 						intersections.AddLast(sideIntersection ?? new Vector());
 					}
 				}
-				/*
+
 				var nextDir = dir.turnLeft();
 
 				if (!canGoInDirection(dir) && !canGoInDirection(nextDir)) {
+					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5 - Constants.roadMargin * 2);
 
+					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.angle(), dir.angle());
 
+					var arcIntersections = arc.multiIntersect(ray);
 
-				}*/
+					if (arcIntersections != null) {
+						foreach (var inters in arcIntersections) {
+							intersections.AddLast(inters);
+						}
+					}
+				} else if (canGoInDirection(dir) && canGoInDirection(nextDir)) {
+
+					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+
+					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.back().angle(), dir.back().angle());
+
+					var arcIntersections = arc.multiIntersect(ray);
+
+					if (arcIntersections != null) {
+						foreach (var inters in arcIntersections) {
+							intersections.AddLast(inters);
+						}
+					}
+				} else if (!canGoInDirection(dir) && canGoInDirection(nextDir)) {
+
+					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+					lineFrom = lineFrom - (new Vector(dir) * Constants.roadMargin);
+
+					var side = new Ray(lineFrom, new Vector(nextDir.back()) * Constants.roadMargin * 2);
+
+					var sideIntersection = ray.intersect(side);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				} else if (canGoInDirection(dir) && !canGoInDirection(nextDir)) {
+
+					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+					lineFrom = lineFrom - (new Vector(nextDir) * Constants.roadMargin);
+
+					var side = new Ray(lineFrom, new Vector(dir.back()) * Constants.roadMargin * 2);
+
+					var sideIntersection = ray.intersect(side);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				}
 			}
 
 			return intersections;

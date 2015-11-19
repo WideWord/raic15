@@ -47,6 +47,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				return b == AxisDirection.up || b == AxisDirection.down;
 			}
 		}
+
+		public static double angle(this AxisDirection dir) {
+			switch (dir) {
+			case AxisDirection.down: return Math.PI * 0.5;
+			case AxisDirection.left: return 0;
+			case AxisDirection.right: return Math.PI;
+			case AxisDirection.up: return -Math.PI * 0.5;
+			default: return 0;
+			}
+		}
     }
 
     public struct Vector {
