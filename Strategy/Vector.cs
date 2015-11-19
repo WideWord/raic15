@@ -165,6 +165,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public double cross(Vector o) {
 			return x * o.y - y * o.x;
 		}
+
+		public void draw(int color) {
+			Debug.fillCircle(this, 15, color);
+		}
     }
 
 	public struct Ray {
@@ -212,7 +216,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				return null;
 			} else {
 				var t = (q - p).cross(s) / r.cross(s);
-				var u = (p - q).cross(r) / r.cross(s);
+				var u = -(p - q).cross(r) / r.cross(s);
 
 				if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
 					return p + t * r;
@@ -381,22 +385,45 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			max = new Vector(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
 		}
 
+		public Ray lineForDirection(AxisDirection dir) {
+			switch (dir) {
+			case AxisDirection.down:
+				return Ray.line(max, new Vector(min.x, max.y));
+			case AxisDirection.left:
+				return Ray.line(min, new Vector(min.x, max.y));
+			case AxisDirection.right:
+				return Ray.line(max, new Vector(max.x, min.y));
+			case AxisDirection.up:
+				return Ray.line(min, new Vector(max.x, min.y));
+			default:
+				return Ray.line(min, min);
+			}
+		}
+
 		public AxisDirection? borderAnyIntersectionDirection(Ray ray, AxisDirection? exceptDir = null) {
-			if (ray.intersect(new Ray(min, new Vector(min.x, max.y))) != null && exceptDir != AxisDirection.left) {
-				return AxisDirection.left;
-			}
-			if (ray.intersect(new Ray(min, new Vector(max.x, min.y))) != null && exceptDir != AxisDirection.up) {
-				return AxisDirection.up;
-			}
-			if (ray.intersect(new Ray(max, new Vector(min.x, max.y))) != null && exceptDir != AxisDirection.down) {
-				return AxisDirection.down;
-			}
-			if (ray.intersect(new Ray(max, new Vector(max.x, min.y))) != null && exceptDir != AxisDirection.right) {
-				return AxisDirection.right;
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				if (dir == exceptDir)
+					continue;
+
+				var side = lineForDirection(dir);
+				if (ray.intersect(side) != null) {
+					//(ray.intersect(side) ?? new Vector(0, 0)).draw(0xFF0000);
+					return dir;
+				}
+
 			}
 			return null;
+		}
+
+		public void draw(int color) {
+			/*foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				lineForDirection(dir).draw(color);
+
+			}*/
+			Debug.rect(min, max, color);				
 		}
 
 	}
 
 }
+

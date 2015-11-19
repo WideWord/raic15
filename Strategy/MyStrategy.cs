@@ -39,7 +39,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			move.WheelTurn = self.GetAngleTo(nextPoint.x, nextPoint.y);
 
 			{
-				map.intersect(vehicle.forwardRay * 500, true);
+				map.intersect(vehicle.forwardRay * 2000, true);
+				(vehicle.forwardRay * 2000).draw(0x0000FF);
+
 			}
 
 			Debug.endPost();

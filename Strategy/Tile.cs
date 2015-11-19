@@ -237,7 +237,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		}
 
 		public void draw(int color) {
-			Debug.rect(rect.min, rect.max, color);
+			rect.draw(color);
 		}
 	}
 
