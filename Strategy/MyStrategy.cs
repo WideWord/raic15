@@ -38,6 +38,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			move.WheelTurn = self.GetAngleTo(nextPoint.x, nextPoint.y);
 
+
 			Debug.endPost();
         }
     }

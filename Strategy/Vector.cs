@@ -225,6 +225,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		}
 
+		public void draw(int color) {
+			Debug.line(p1, p2, color);
+		}
+
 	}
 
 	public class Arc {
@@ -256,6 +260,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			} else {
 				return angle < toAngle && angle > fromAngle;
 			}
+		}
+
+		public Vector pointAtAngle(double angle) {
+			return Vector.fromAngle(angle) * radius + position;
 		}
 
 		public Vector[] multiIntersect(Ray ray) {
@@ -319,6 +327,33 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 			}
 			return vec;
+		}
+
+		public void draw(int color) {
+			Vector lastPoint = pointAtAngle(fromAngle);
+			double angle = fromAngle;
+
+			if (fromAngle > toAngle) {
+				while (angle < Math.PI) {
+					angle += 0.1;
+					var point = pointAtAngle(angle);
+					Debug.line(lastPoint, point, color);
+					lastPoint = point;
+				}
+
+				angle -= Math.PI * 2;
+			}
+
+			while (angle < toAngle - 0.0001) {
+				if (angle + 0.1 > toAngle)
+					angle = toAngle;
+				else
+					angle += 0.1;
+				
+				var point = pointAtAngle(angle);
+				Debug.line(lastPoint, point, color);
+				lastPoint = point;
+			}
 		}
 
 	}
