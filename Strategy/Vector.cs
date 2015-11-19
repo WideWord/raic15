@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
@@ -134,6 +135,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public double angle {
+			get {
+				return Math.Atan2(y, x);
+			}
+		}
+
 		public static Vector up = new Vector(0, -1);
 		public static Vector down = new Vector(0, 1);
 		public static Vector left = new Vector(-1, 0);
@@ -154,6 +161,18 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public Vector position { get; private set; }
 		public Vector direction { get; private set; }
+
+		public Vector p1 {
+			get {
+				return position;
+			}
+		}
+
+		public Vector p2 {
+			get {
+				return position + direction;
+			}
+		}
 
 		public Ray(Vector position, Vector direction) {
 			this.position = position;
@@ -183,6 +202,113 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					return null;
 				}
 			}
+		}
+
+		public double lineDistance(Vector p) {
+
+			var p1 = this.p1;
+			var p2 = this.p2;
+
+			return Math.Abs((p2.y - p1.y) * p.x - (p2.x - p1.x) * p.y + p2.x * p1.y - p2.y * p1.x)
+			/
+			(p1 - p2).length;
+
+		}
+
+	}
+
+	public class Arc {
+
+		public Vector position { get; private set; }
+		public double radius { get; private set; }
+
+		public double fromAngle { get; private set; }
+		public double toAngle { get; private set; }
+
+		public Arc(Vector position, double raduis, double fromAngle, double toAngle) {
+			while (fromAngle > Math.PI)
+				fromAngle -= Math.PI;
+			while (fromAngle < Math.PI)
+				fromAngle += Math.PI;
+
+			while (toAngle > Math.PI)
+				toAngle -= Math.PI;
+			while (toAngle < Math.PI)
+				toAngle += Math.PI;
+		}
+
+		public bool isPointInArcSector(Vector point) {
+
+			double angle = (point - position).angle;
+
+			if (fromAngle > toAngle) {
+				return angle > fromAngle || angle < toAngle;
+			} else {
+				return angle < toAngle && angle > fromAngle;
+			}
+		}
+
+		public Vector[] multiIntersect(Ray ray) {
+
+			var e = ray.position;
+			var d = ray.direction;
+			var f = e - position;
+
+			var a = d * d;
+			var b = 2 * (f * d);
+			var c = (f * f) - radius * radius;
+
+			var D = b * b - 4 * a * c;
+
+			if (D < 0)
+				return null;
+			
+			if (D == 0) { // impossible
+				D = 0.00001;
+			}
+
+			var sD = Math.Sqrt(D);
+			var a2 = a * 2;
+
+			var t1 = (-b + sD) / a2;
+			var t2 = (-b - sD) / a2;
+
+			var p1 = ray.position + ray.direction * t1;
+			var p2 = ray.position + ray.direction * t2;
+
+
+			var havePoint1 = t1 >= 0 && t1 <= 1 && isPointInArcSector(p1);
+			var havePoint2 = t2 >= 0 && t2 <= 1 && isPointInArcSector(p2);
+
+			if (havePoint1 && havePoint2) {
+				return new Vector[] { p1, p2 };
+			} else if (havePoint1) {
+				return new Vector[] { p1 };
+			} else if (havePoint2) {
+				return new Vector[] { p2 };
+			} else {
+				return null;
+			}
+
+		}
+
+		public Vector? intersect(Ray ray) {
+			var intersections = multiIntersect(ray);
+
+			if (intersections == null)
+				return null;
+
+			Vector? vec = null;
+			var dist = double.MaxValue;
+
+			foreach (var intersection in intersections) {
+				var curDist = (intersection - ray.position).length;
+				if (curDist < dist) {
+					dist = curDist;
+					vec = intersection;
+				}
+			}
+			return vec;
 		}
 
 	}
