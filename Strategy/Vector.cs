@@ -84,9 +84,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
         public static Vector operator * (Vector a, double value) {
             return new Vector(a.x * value, a.y * value);
         }
+			
+		public static Vector operator * (double value, Vector a) {
+			return a * value;
+		}
 
 		public static Vector operator / (Vector a, double value) {
 			return new Vector(a.x / value, a.y / value);
+		}
+
+		public static Vector operator / (double value, Vector a) {
+			return a / value;
 		}
 
         public static double operator * (Vector a, Vector b) {
@@ -115,5 +123,46 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			return Math.Abs(a.x - b.x) < E && Math.Abs(a.y - b.y) < E;
 		}
+
+		public double cross(Vector o) {
+			return x * o.y - y * o.x;
+		}
     }
+
+	public class Ray {
+
+		public Vector position { get; private set; }
+		public Vector direction { get; private set; }
+
+		public Ray(Vector position, Vector direction) {
+			this.position = position;
+			this.direction = direction;
+		}
+
+		public static Ray line(Vector p1, Vector p2) {
+			return new Ray(p1, p2 - p1);
+		}
+
+		public Vector? intersect(Ray o) {
+			var p = position;
+			var r = direction;
+
+			var q = o.position;
+			var s = o.direction;
+
+			if (r.cross (s) == 0) {
+				return null;
+			} else {
+				var t = (q - p).cross(s) / r.cross(s);
+				var u = (p - q).cross(r) / r.cross(s);
+
+				if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+					return p + t * r;
+				} else {
+					return null;
+				}
+			}
+		}
+	}
+
 }
