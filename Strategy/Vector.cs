@@ -151,6 +151,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public double angleTo(Vector o) {
+			double relAngle = o.angle - angle;
+			while (relAngle > Math.PI)
+				relAngle -= 2 * Math.PI;
+
+			while (relAngle < -Math.PI)
+				relAngle += 2 * Math.PI;
+
+			return relAngle;
+		}
+
 		public static Vector up = new Vector(0, -1);
 		public static Vector down = new Vector(0, 1);
 		public static Vector left = new Vector(-1, 0);
@@ -383,6 +394,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public Rect(Vector a, Vector b) {
 			min = new Vector(Math.Min(a.x, b.x), Math.Min(a.y, b.y));
 			max = new Vector(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
+		}
+
+		public bool contains(Vector point) {
+			return point.x <= max.x && point.x >= min.x && point.y <= max.y && point.y >= min.y;
 		}
 
 		public Ray lineForDirection(AxisDirection dir) {
