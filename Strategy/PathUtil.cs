@@ -59,6 +59,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			{
 				var current = to;
 
+				if (cost[to.posX, to.posY] == -1)
+					return list; // SHEEIT, UNKNOWN TILES
+
 				while (current != from) {
 					list.AddFirst(new TilePathNode(current));
 					current = current.nextTileInDirection(backDir[current.posX, current.posY]);
@@ -68,13 +71,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return list;
 		}
 
-		public static LinkedList<TilePathNode> findPathFromWaypoints(int[][] waypoints, RoadMap roadMap, Vector startPosition) {
+		public static LinkedList<TilePathNode> findPathFromWaypoints(int[][] waypoints, RoadMap roadMap, Vector startPosition, int skipWaypoints = 1) {
 
 			var path = new LinkedList<TilePathNode>();
 
 			var lastTile = roadMap.tileAt(startPosition);
 
-			for (int i = 1, iend = waypoints.Length * 2 + 1; i < iend; ++i) {
+			for (int i = skipWaypoints, iend = waypoints.Length * 2 + 1; i < iend; ++i) {
 				var currentTile = roadMap.tileAt(waypoints[i % waypoints.Length][0], waypoints[i % waypoints.Length][1]);
 
 				var mpath = findPathBetween(lastTile, currentTile); 
@@ -83,10 +86,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					path.AddLast(node);
 				}
 
-				var lastNode = path.Last.Value;
-				lastNode.waypointIndex = i % waypoints.Length;
-				path.Last.Value = lastNode;
-
+				if (path.Last != null) {
+					var lastNode = path.Last.Value;
+					lastNode.waypointIndex = i % waypoints.Length;
+					path.Last.Value = lastNode;
+				}
 				lastTile = currentTile;
 			}
 

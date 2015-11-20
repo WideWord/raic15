@@ -94,8 +94,10 @@
     <Compile Include="Strategy\Debug.cs" />
     <Compile Include="Strategy\PathUtil.cs" />
     <Compile Include="Strategy\Constants.cs" />
-    <Compile Include="Strategy\PathNavigator.cs" />
     <Compile Include="Strategy\Vehicle.cs" />
+    <Compile Include="Strategy\ManagedVehicle.cs" />
+    <Compile Include="Strategy\VehicleDriver.cs" />
+    <Compile Include="Strategy\VirtualVehicle.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

@@ -7,36 +7,28 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
     public sealed class MyStrategy : IStrategy {
 
-		private Vehicle vehicle = new Vehicle();
-		private PathNavigator navigator;
+		private ManagedVehicle currentVehicle;
 
-		private LinkedList<PathUtil.PathNode> path; 
-
-		private RoadMap map;
+		public static RoadMap map { get; private set; }
+		public static int[][] waypoints;
 
         public void Move(Car self, World world, Game game, Move move) {
 			Debug.beginPost();
 			Constants.setConstants(game, world);
-			vehicle.setCar(self);
 
 			if (map == null) {
+				waypoints = world.Waypoints;
 				map = new RoadMap(world.Width, world.Height);
 				map.updateMap(world.TilesXY);
 			}
 
-			if (path == null) {
-				path = PathUtil.buildSmoothPath(PathUtil.findPathFromWaypoints(world.Waypoints, map, vehicle.position));
-				navigator = new PathNavigator(path);
+			if (currentVehicle == null) {
+				currentVehicle = new ManagedVehicle();
 			}
-				
-			PathUtil.drawPath(path, 0xFF0000);
 
-			var nextPoint = navigator.nextPoint(vehicle);
-			Debug.fillCircle(nextPoint, 25, 0xFFFF00);
+			currentVehicle.setCar(self);
 
-			move.EnginePower = 0.7;
-
-			move.WheelTurn = self.GetAngleTo(nextPoint.x, nextPoint.y);
+			currentVehicle.tick(move);
 
 			Debug.endPost();
         }

@@ -17,9 +17,45 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public double angle {
+			get {
+				return car.Angle;
+			}
+		}
+
+		public double angularSpeed {
+			get {
+				return car.AngularSpeed;
+			}
+		}
+
 		public Vector forward {
 			get {
-				return Vector.fromAngle(car.Angle);
+				return Vector.fromAngle(angle);
+			}
+		}
+
+		public Vector speed {
+			get {
+				return new Vector(car.SpeedX, car.SpeedY);
+			}
+		}
+
+		public double enginePower {
+			get {
+				return car.EnginePower;
+			}
+		}
+
+		public double steeringAngle {
+			get {
+				return car.WheelTurn;
+			}
+		}
+
+		public Ray forwardRay {
+			get {
+				return new Ray(position, forward);
 			}
 		}
 	}

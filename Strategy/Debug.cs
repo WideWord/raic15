@@ -89,6 +89,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		public static void print(Vector pos, string msg, int color = 0) {
 			sendCommand(String.Format("text {0} {1} {2}", encodeVector(pos), msg, encodeColor(color)));
 		}
+			
 	}
 
 }

@@ -5,12 +5,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public static class Constants {
 
-		public static double turningSmoothCoef {
-			get {
-				return 0.5;
-			}
-		}
+		public static readonly double turningSmoothCoef = 0.5;
 
+		public static readonly double roadMargin = 80.0;
 
 		public static double tileSize { get; private set; }
 

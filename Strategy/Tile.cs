@@ -1,6 +1,6 @@
 ﻿using System;
 using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
-
+using System.Collections.Generic;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
@@ -16,6 +16,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return new Vector (
 					posX * Constants.tileSize + Constants.tileSize * 0.5,
 					posY * Constants.tileSize + Constants.tileSize * 0.5
+				);
+			}
+		}
+
+		public Rect rect {
+			get {
+				var half = new Vector(Constants.tileSize / 2, Constants.tileSize / 2);
+				return new Rect(
+					center - half,
+					center + half
 				);
 			}
 		}
@@ -115,18 +125,120 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
-		public struct CollisionResult {
-			Vector collisionPoint;
-			double collisionDistance;
-			double collisionAngle;
+		public LinkedList<Vector> multiIntersect(Ray ray, bool debugDrawWalls = false) {
+
+			var intersections = new LinkedList<Vector>();
+
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				if (!canGoInDirection(dir)) {
+
+					var sideCenter = center + new Vector(dir) * (Constants.tileSize * 0.5 - Constants.roadMargin);
+					var sideHalfLength = (Constants.tileSize * 0.5 - Constants.roadMargin * 2);
+					var side = Ray.line(
+						sideCenter + new Vector(dir.turnLeft()) * sideHalfLength, 
+						sideCenter + new Vector(dir.turnRight()) * sideHalfLength
+					);
+						
+					var sideIntersection = ray.intersect(side);
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				}
+
+				var nextDir = dir.turnLeft();
+
+				if (!canGoInDirection(dir) && !canGoInDirection(nextDir)) {
+					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5 - Constants.roadMargin * 2);
+
+					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.angle(), dir.angle());
+
+					if (debugDrawWalls)
+						arc.draw(0x00FF00);
+
+					var arcIntersections = arc.multiIntersect(ray);
+
+					if (arcIntersections != null) {
+						foreach (var inters in arcIntersections) {
+							intersections.AddLast(inters);
+						}
+					}
+				} else if (canGoInDirection(dir) && canGoInDirection(nextDir)) {
+
+					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+
+					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.back().angle(), dir.back().angle());
+					if (debugDrawWalls)
+						arc.draw(0x00FF00);
+
+					var arcIntersections = arc.multiIntersect(ray);
+
+					if (arcIntersections != null) {
+						foreach (var inters in arcIntersections) {
+							intersections.AddLast(inters);
+						}
+					}
+				} else if (!canGoInDirection(dir) && canGoInDirection(nextDir)) {
+
+					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+					lineFrom = lineFrom - (new Vector(dir) * Constants.roadMargin);
+
+					var side = new Ray(lineFrom, new Vector(nextDir.back()) * Constants.roadMargin * 2);
+
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
+
+					var sideIntersection = ray.intersect(side);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				} else if (canGoInDirection(dir) && !canGoInDirection(nextDir)) {
+
+					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
+					lineFrom = lineFrom - (new Vector(nextDir) * Constants.roadMargin);
+
+					var side = new Ray(lineFrom, new Vector(dir.back()) * Constants.roadMargin * 2);
+
+					if (debugDrawWalls)
+						side.draw(0x00FF00);
+
+					var sideIntersection = ray.intersect(side);
+
+					if (sideIntersection != null) {
+						intersections.AddLast(sideIntersection ?? new Vector());
+					}
+				}
+			}
+
+			return intersections;
 		}
 
-		public CollisionResult? raycastWithWalls(Ray ray) {
+		public Vector? intersect(Ray ray) {
+			var intersections = multiIntersect(ray);
 
+			if (intersections.Count == 0)
+				return null;
+
+			Vector? vec = null;
+			var dist = double.MaxValue;
+
+			foreach (var intersection in intersections) {
+				var curDist = (intersection - ray.position).length;
+				if (curDist < dist) {
+					dist = curDist;
+					vec = intersection;
+				}
+			}
+
+			return vec;
 		}
 
-		
-
+		public void draw(int color) {
+			rect.draw(color);
+		}
 	}
 
 }
