@@ -4,8 +4,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public struct VirtualVehicle {
 
-		public Vector position;
-		public double angle;
+		public Vector position { get; private set; }
+		public double angle { get; private set; }
+		public Vector speed { get; private set; }
+		public double angularSpeed { get; private set; }
+		public double enginePower { get; private set; }
+		public double steeringAngle { get; private set; }
 
 		public Vector forward {
 			get {
@@ -22,6 +26,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public VirtualVehicle(Vehicle vehicle) {
 			position = vehicle.position;
 			angle = vehicle.angle;
+			speed = vehicle.speed;
+			angularSpeed = vehicle.angularSpeed;
+			enginePower = vehicle.enginePower;
+			steeringAngle = vehicle.steeringAngle;
+		}
+
+		void simulate(float enginePower, float steeringAngle) {
+			
 		}
 
 	}

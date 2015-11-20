@@ -13,7 +13,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var node = pathPoint;
 
-			for (int i = 0; i < 6 && node != null; ++i) {
+			for (int i = 0; i < 3 && node != null; ++i) {
 
 				path.AddLast(node.Value.tile);
 

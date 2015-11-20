@@ -59,6 +59,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			{
 				var current = to;
 
+				if (cost[to.posX, to.posY] == -1)
+					return list; // SHEEIT, UNKNOWN TILES
+
 				while (current != from) {
 					list.AddFirst(new TilePathNode(current));
 					current = current.nextTileInDirection(backDir[current.posX, current.posY]);
