@@ -18,10 +18,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			Constants.setConstants(game, world);
 
 			if (currentVehicle == null) {
-				map = new RoadMap(world.Width, world.Height);
-				map.updateMap(world.TilesXY);
 
-				path = PathUtil.findPathFromWaypoints(world.Waypoints, map, new Vector(self.X, self.Y));
+				if (map == null) {
+					map = new RoadMap(world.Width, world.Height);
+					map.updateMap(world.TilesXY);
+
+					path = PathUtil.findPathFromWaypoints(world.Waypoints, map, new Vector(self.X, self.Y));
+				}
 
 				currentVehicle = new ManagedVehicle(path);
 			}

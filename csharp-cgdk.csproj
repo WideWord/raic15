@@ -99,6 +99,8 @@
     <Compile Include="Strategy\TilePathNavigator.cs" />
     <Compile Include="Strategy\ManagedVehicle.cs" />
     <Compile Include="Strategy\VehicleDriver.cs" />
+    <Compile Include="Strategy\VirtualVehicle.cs" />
+    <Compile Include="Strategy\WorldSimulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
