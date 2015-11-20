@@ -9,24 +9,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		private ManagedVehicle currentVehicle;
 
-		private static LinkedList<PathUtil.TilePathNode> path; 
-
-		private static RoadMap map;
+		public static RoadMap map { get; private set; }
+		public static int[][] waypoints;
 
         public void Move(Car self, World world, Game game, Move move) {
 			Debug.beginPost();
 			Constants.setConstants(game, world);
 
+			if (map == null) {
+				waypoints = world.Waypoints;
+				map = new RoadMap(world.Width, world.Height);
+				map.updateMap(world.TilesXY);
+			}
+
 			if (currentVehicle == null) {
-
-				if (map == null) {
-					map = new RoadMap(world.Width, world.Height);
-					map.updateMap(world.TilesXY);
-
-					path = PathUtil.findPathFromWaypoints(world.Waypoints, map, new Vector(self.X, self.Y));
-				}
-
-				currentVehicle = new ManagedVehicle(path);
+				currentVehicle = new ManagedVehicle();
 			}
 
 			currentVehicle.setCar(self);

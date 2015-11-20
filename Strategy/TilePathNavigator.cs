@@ -20,6 +20,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			this.vehicle = vehicle;
 		}
 
+		public void setPath(LinkedList<PathUtil.TilePathNode> path) {
+			_nextNode = path.First;
+		}
+
 		void update() {
 			var nextTile = _nextNode.Value.tile;
 
