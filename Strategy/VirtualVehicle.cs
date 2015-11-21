@@ -23,6 +23,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public FreeRect Rect {
+			get {
+				return new FreeRect(position, Constants.vehicleLength, Constants.vehicleWidth, angle);
+			}
+		}
+
 		public VirtualVehicle(Vehicle vehicle) {
 			position = vehicle.position;
 			angle = vehicle.angle;

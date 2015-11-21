@@ -169,6 +169,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return relAngle;
 		}
 
+		public Vector rotate(double deltaAngle) {
+			return Vector.fromAngle(deltaAngle + this.angle) * this.length;
+		}
+
 		public static Vector up = new Vector(0, -1);
 		public static Vector down = new Vector(0, 1);
 		public static Vector left = new Vector(-1, 0);
@@ -444,6 +448,74 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 			}*/
 			Debug.rect(min, max, color);				
+		}
+
+	}
+
+	public struct FreeRect {
+
+		public Vector position { get; private set; }
+		public double width { get; private set; }
+		public double height { get; private set; }
+		public double angle { get; private set; }
+
+		public Vector forward { get { return Vector.fromAngle(angle); } }
+
+		public FreeRect(Vector pos, double width, double height, double angle) {
+			position = pos;
+			this.width = width;
+			this.height = height;
+			this.angle = angle;
+		}
+
+		public Ray edgeInDirection(AxisDirection dir) {
+			switch (dir) {
+			case AxisDirection.down:
+				return Ray.line(
+					(position + new Vector(-width, height)).rotate(angle), 
+					(position + new Vector(width, height)).rotate(angle)
+				);
+			case AxisDirection.left:
+				return Ray.line(
+					(position + new Vector(-width, height)).rotate(angle), 
+					(position + new Vector(-width, -height)).rotate(angle)
+				);
+			case AxisDirection.right:
+				return Ray.line(
+					(position + new Vector(width, height)).rotate(angle), 
+					(position + new Vector(width, -height)).rotate(angle)
+				);
+			case AxisDirection.up:
+				return Ray.line(
+					(position + new Vector(-width, -height)).rotate(angle), 
+					(position + new Vector(width, -height)).rotate(angle)
+				);
+			}
+			return new Ray(Vector.up, Vector.up);
+		}
+
+		public bool isIntersect(Ray ray) {
+			
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = edgeInDirection(dir);
+				if (ray.intersect(edge) != null) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool isIntersect(Arc arc) {
+
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = edgeInDirection(dir);
+				if (arc.intersect(edge) != null) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 	}

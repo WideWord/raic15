@@ -45,9 +45,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
-		public static double getCarAcceleration(CarType type, AxisDirection direction) {
-			return getEnginePower(type, direction) / getMass(type);
-		}
+		public static double vehicleLength { get { return game.CarWidth; } }
+		public static double vehicleWidth { get { return game.CarHeight; } }
 
 		public static void setConstants(Game _game, World _world) {
 			game = _game;
