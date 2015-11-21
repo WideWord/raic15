@@ -522,6 +522,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
+
+
+	}
+
+	public struct MyMath {
+
+		public static double limit(double val, double limit) {
+			return Math.Max(Math.Min(val, limit), -limit);
+		}
+
 	}
 
 }

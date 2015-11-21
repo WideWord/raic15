@@ -63,6 +63,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				speed -= crossFriction;
 			}
 
+			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower, Constants.maxEnginePowerChange), 1.0);
+			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(steeringAngle, Constants.maxSteeringAngleChange), 1.0);
+
 		}
 
 	}

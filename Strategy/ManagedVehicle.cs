@@ -27,9 +27,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			driver.drive(this, path.First, move);
 			*/
 
-			move.EnginePower = 1.0;
 
-			if (Constants.currentTick > 180) {
+			if (Constants.currentTick > 300) {
 				if (!initialized) {
 
 					virtualVehicle = new VirtualVehicle(this);
@@ -37,9 +36,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					initialized = true;
 				} else {
 				
-					virtualVehicle.simulateTick(1.0, 0.0);
+					move.EnginePower = -1.0;
 
-					Console.WriteLine((position - virtualVehicle.position).length);
+					virtualVehicle.simulateTick(-1.0, 0.0);
+
+					Console.WriteLine("{0} {1} {2}", (position - virtualVehicle.position).length, enginePower, virtualVehicle.enginePower);
 
 					virtualVehicle.position.draw(0xFF0000);
 				
