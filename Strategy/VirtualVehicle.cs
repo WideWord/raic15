@@ -47,6 +47,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			var acceleration = forward * Constants.getAcceleration(type, enginePower) * Constants.physicsTickFactor;
 
 			var airFriction = Math.Pow(1 - Constants.vehicleMovementAirFriction, Constants.physicsTickFactor);
+			//var rotFriction = Math.Pow(1 - Constants.vehicleRotationAirFriction, Constants.physicsTickFactor);
+
+			angularSpeed = Constants.vehicleAngularSpeedFactor * steeringAngle * (speed * forward);
 
 			for (int i = 0; i < Constants.physicsTicks; ++i) {
 				position += speed * Constants.physicsTickFactor;
@@ -61,13 +64,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			
 				speed -= lengthFriction;
 				speed -= crossFriction;
+
+				angle += angularSpeed * Constants.physicsTickFactor;
 			}
 
-			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower, Constants.maxEnginePowerChange), 1.0);
-			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(steeringAngle, Constants.maxSteeringAngleChange), 1.0);
-
-		}
-
+			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower - enginePower, Constants.maxEnginePowerChange), 1.0);
+			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(newSteeringAngle - steeringAngle, Constants.maxSteeringAngleChange), 1.0);
+		} 
 	}
 }
 

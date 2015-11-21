@@ -37,10 +37,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				} else {
 				
 					move.EnginePower = -1.0;
+					move.WheelTurn = 0.5;
 
-					virtualVehicle.simulateTick(-1.0, 0.0);
+					virtualVehicle.simulateTick(-1.0, 0.5);
 
-					Console.WriteLine("{0} {1} {2}", (position - virtualVehicle.position).length, enginePower, virtualVehicle.enginePower);
+					Console.WriteLine("{0} {1} {2}", (position - virtualVehicle.position).length, steeringAngle, virtualVehicle.steeringAngle);
 
 					virtualVehicle.position.draw(0xFF0000);
 				

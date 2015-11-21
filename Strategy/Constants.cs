@@ -61,11 +61,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public static double vehicleRotationAirFriction { get { return game.CarRotationAirFrictionFactor; } }
+
 		public static double vehicleLengthFriction { get { return game.CarLengthwiseMovementFrictionFactor; } }
 		public static double vehicleCrossFriction { get { return game.CarCrosswiseMovementFrictionFactor; } }
 
 		public static double maxEnginePowerChange { get { return game.CarEnginePowerChangePerTick; } }
 		public static double maxSteeringAngleChange { get { return game.CarWheelTurnChangePerTick; } }
+
+		public static double vehicleAngularSpeedFactor { get { return game.CarAngularSpeedFactor; } }
 
 		public static int currentTick { get { return world.Tick; } }
 
