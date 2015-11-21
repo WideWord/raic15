@@ -27,7 +27,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				}
 				writer.WriteLine(command);
 			}
-			System.Console.WriteLine(command);
+			//System.Console.WriteLine(command);
 		}
 
 		public static void beginPre() {

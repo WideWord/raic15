@@ -58,6 +58,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				return new Ray(position, forward);
 			}
 		}
+
+		public CarType type {
+			get {
+				return car.Type;
+			}
+		}
 	}
 }
 

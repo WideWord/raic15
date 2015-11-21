@@ -140,6 +140,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
             return (a.x * b.x) + (a.y * b.y);
         }
 
+		public static double operator % (Vector a, Vector b) {
+			return a.cross(b);
+		}
+
 		public double length {
 			get {
 				return Math.Sqrt(x * x + y * y);

@@ -8,6 +8,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public static readonly double turningSmoothCoef = 0.5;
 		public static readonly double roadMargin = 80.0;
 
+		public static readonly int physicsTicks = 10;
+		public static readonly double physicsTickFactor = 1.0 / (double)physicsTicks;
+
 		private static Game game;
 		private static World world;
 
@@ -45,8 +48,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public static double getAcceleration(CarType type, double enginePower) {
+			return getEnginePower(type, ((enginePower > 0)?AxisDirection.up:AxisDirection.down)) / getMass(type) * enginePower;
+		}
+
 		public static double vehicleLength { get { return game.CarWidth; } }
 		public static double vehicleWidth { get { return game.CarHeight; } }
+
+		public static double vehicleMovementAirFriction {
+			get {
+				return game.CarMovementAirFrictionFactor;
+			}
+		}
+
+		public static double vehicleLengthFriction { get { return game.CarLengthwiseMovementFrictionFactor; } }
+		public static double vehicleCrossFriction { get { return game.CarCrosswiseMovementFrictionFactor; } }
+
+		public static int currentTick { get { return world.Tick; } }
 
 		public static void setConstants(Game _game, World _world) {
 			game = _game;

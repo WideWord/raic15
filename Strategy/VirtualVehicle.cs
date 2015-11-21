@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
+
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public struct VirtualVehicle {
@@ -10,6 +12,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public double angularSpeed { get; private set; }
 		public double enginePower { get; private set; }
 		public double steeringAngle { get; private set; }
+		public CarType type { get; private set; }
 
 		public Vector forward {
 			get {
@@ -36,10 +39,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			angularSpeed = vehicle.angularSpeed;
 			enginePower = vehicle.enginePower;
 			steeringAngle = vehicle.steeringAngle;
+			type = vehicle.type;
 		}
 
-		void simulate(float enginePower, float steeringAngle) {
+		public void simulateTick(double newEnginePower, double newSteeringAngle) {
+
+			var acceleration = forward * Constants.getAcceleration(type, enginePower) * Constants.physicsTickFactor;
+
+			var airFriction = Math.Pow(1 - Constants.vehicleMovementAirFriction, Constants.physicsTickFactor);
+
+			for (int i = 0; i < Constants.physicsTicks; ++i) {
+				position += speed * Constants.physicsTickFactor;
+				speed += acceleration;
+				speed *= airFriction;
+
+				var lengthFriction =
+					Math.Max(Math.Min(speed * forward, Constants.vehicleLengthFriction * Constants.physicsTickFactor), -Constants.vehicleLengthFriction * Constants.physicsTickFactor) * forward;
+
+				var crossFriction = 
+					Math.Max(Math.Min(speed % forward, Constants.vehicleCrossFriction * Constants.physicsTickFactor), -Constants.vehicleCrossFriction * Constants.physicsTickFactor) * forward.rotate(-Math.PI * 0.5);
 			
+				speed -= lengthFriction;
+				speed -= crossFriction;
+			}
+
 		}
 
 	}

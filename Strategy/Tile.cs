@@ -125,9 +125,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
-		public LinkedList<Vector> multiIntersect(Ray ray, bool debugDrawWalls = false) {
-
-			var intersections = new LinkedList<Vector>();
+		void getEdges(LinkedList<Ray> rays, LinkedList<Arc> arcs) {
 
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				if (!canGoInDirection(dir)) {
@@ -138,14 +136,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 						sideCenter + new Vector(dir.turnLeft()) * sideHalfLength, 
 						sideCenter + new Vector(dir.turnRight()) * sideHalfLength
 					);
-						
-					var sideIntersection = ray.intersect(side);
-					if (debugDrawWalls)
-						side.draw(0x00FF00);
 
-					if (sideIntersection != null) {
-						intersections.AddLast(sideIntersection ?? new Vector());
-					}
+					rays.AddLast(side);
 				}
 
 				var nextDir = dir.turnLeft();
@@ -155,31 +147,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.angle(), dir.angle());
 
-					if (debugDrawWalls)
-						arc.draw(0x00FF00);
+					arcs.AddLast(arc);
 
-					var arcIntersections = arc.multiIntersect(ray);
-
-					if (arcIntersections != null) {
-						foreach (var inters in arcIntersections) {
-							intersections.AddLast(inters);
-						}
-					}
 				} else if (canGoInDirection(dir) && canGoInDirection(nextDir)) {
 
 					var arcCenter = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
 
 					var arc = new Arc(arcCenter, Constants.roadMargin, nextDir.back().angle(), dir.back().angle());
-					if (debugDrawWalls)
-						arc.draw(0x00FF00);
 
-					var arcIntersections = arc.multiIntersect(ray);
+					arcs.AddLast(arc);
 
-					if (arcIntersections != null) {
-						foreach (var inters in arcIntersections) {
-							intersections.AddLast(inters);
-						}
-					}
 				} else if (!canGoInDirection(dir) && canGoInDirection(nextDir)) {
 
 					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
@@ -187,14 +164,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 					var side = new Ray(lineFrom, new Vector(nextDir.back()) * Constants.roadMargin * 2);
 
-					if (debugDrawWalls)
-						side.draw(0x00FF00);
+					rays.AddLast(side);
 
-					var sideIntersection = ray.intersect(side);
-
-					if (sideIntersection != null) {
-						intersections.AddLast(sideIntersection ?? new Vector());
-					}
 				} else if (canGoInDirection(dir) && !canGoInDirection(nextDir)) {
 
 					var lineFrom = center + (new Vector(dir) + new Vector(nextDir)) * (Constants.tileSize * 0.5);
@@ -202,15 +173,69 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 					var side = new Ray(lineFrom, new Vector(dir.back()) * Constants.roadMargin * 2);
 
-					if (debugDrawWalls)
-						side.draw(0x00FF00);
+					rays.AddLast(side);
+				}
+			}
 
-					var sideIntersection = ray.intersect(side);
+		}
 
-					if (sideIntersection != null) {
-						intersections.AddLast(sideIntersection ?? new Vector());
+		public bool isIntersect(Ray ray) {
+			var rays = new LinkedList<Ray>();
+			var arcs = new LinkedList<Arc>();
+
+			getEdges(rays, arcs);
+
+			foreach (var side in rays) {
+
+				var sideIntersection = ray.intersect(side);
+
+				if (sideIntersection != null) {
+					return true;
+				}
+			}
+
+			foreach (var arc in arcs) {
+
+				var arcIntersections = arc.multiIntersect(ray);
+
+				if (arcIntersections != null) {
+					return true;
+				}
+
+			}
+
+			return false;
+
+		}
+
+		public LinkedList<Vector> multiIntersect(Ray ray) {
+
+			var intersections = new LinkedList<Vector>();
+
+			var rays = new LinkedList<Ray>();
+			var arcs = new LinkedList<Arc>();
+
+			getEdges(rays, arcs);
+
+			foreach (var side in rays) {
+				
+				var sideIntersection = ray.intersect(side);
+
+				if (sideIntersection != null) {
+					intersections.AddLast(sideIntersection ?? new Vector());
+				}
+			}
+
+			foreach (var arc in arcs) {
+
+				var arcIntersections = arc.multiIntersect(ray);
+
+				if (arcIntersections != null) {
+					foreach (var inters in arcIntersections) {
+						intersections.AddLast(inters);
 					}
 				}
+
 			}
 
 			return intersections;
@@ -234,6 +259,27 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 
 			return vec;
+		}
+
+		public bool isIntersect(FreeRect rect) {
+			
+			var rays = new LinkedList<Ray>();
+			var arcs = new LinkedList<Arc>();
+
+			getEdges(rays, arcs);
+
+			foreach (var side in rays) {
+
+				if (rect.isIntersect(side))
+					return true;
+			}
+
+			foreach (var arc in arcs) {
+				if (rect.isIntersect(arc))
+					return true;
+			}
+
+			return false;
 		}
 
 		public void draw(int color) {
