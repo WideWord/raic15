@@ -6,34 +6,92 @@ using Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk.Model;
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public class VehicleDriver {
-		
-		public void drive(Vehicle vehicle, LinkedListNode<PathUtil.TilePathNode> pathPoint, Move move) {
 
-			var path = new LinkedList<Tile>();
+		private LinkedList<VehicleDriverStrategy> strategies = new LinkedList<VehicleDriverStrategy>();
 
-			var node = pathPoint;
+		public VehicleDriver() {
+			strategies.AddLast(new LineRoadStrategy());
+		}
 
-			for (int i = 0; i < 3 && node != null; ++i) {
+		public void drive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
 
-				path.AddLast(node.Value.tile);
-
-				node = node.Next;
+			foreach (var strategy in strategies) {
+				if (strategy.tryDrive(vehicle, tilePath, move)) {
+					return;
+				}
 			}
 
-			foreach (var tile in path) {
-				tile.draw(0xFF0000);
+			//throw new Exception("Do not have strategy for this situation");
+		}
+	}
+
+	public interface VehicleDriverStrategy {
+
+		bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move);
+
+	}
+
+	public class LineRoadStrategy : VehicleDriverStrategy {
+
+		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+
+			AxisDirection dir;
+
+			{
+				var current = MyStrategy.map.tileAt(vehicle.position);
+
+				var node = tilePath.First;
+				if (node == null)
+					return false;
+
+				dir = current.directionForTile(node.Value.tile) ?? AxisDirection.up;
+
+				for (int i = 0; i < 2 && node != null; ++i) {
+
+					var next = node.Next;
+
+					if (next == null) {
+						break;
+					}
+
+					if (node.Value.tile.directionForTile(next.Value.tile) != dir)
+						return false;
+
+					node = next;
+                }
 			}
 
-			var nextTile = path.First.Value;
+			var dirVec = new Vector(dir);
 
-			var directionToTile = nextTile.center - vehicle.position;
+			if (vehicle.forward * dirVec < 0.3) {
 
-			move.EnginePower = 0.3;
+				var power = 1.0;
+				if (vehicle.speed.length > 12) {
+					power = 0.1;
+				}
 
-			move.WheelTurn = vehicle.forward.angleTo(directionToTile) * 4;
+				if (MyStrategy.map.intersect(-vehicle.forwardRay * Constants.vehicleLength * 1.5) == null) {
+					move.EnginePower = power;
+					move.WheelTurn = vehicle.forward.angleTo(dirVec) * 100;
+				} else {
+					move.EnginePower = -power;
+					move.WheelTurn = -vehicle.forward.angleTo(dirVec) * 100;
+				}
 
+			} else {
+				move.EnginePower = 1;
+				move.WheelTurn = vehicle.forward.angleTo(dirVec) * 4;
+			}
+
+			return true;
 
 		}
+
+	}
+
+	public class JustBeforeTurningToLineStrategy : VehicleDriverStrategy {
+
+		
 
 	}
 }

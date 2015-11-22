@@ -120,6 +120,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return new Vector(a.x - b.x, a.y - b.y);
 		}
 
+		public static Vector operator - (Vector a) {
+			return new Vector(-a.x, -a.y);
+		}
+
 		public static Vector operator *(Vector a, double value) {
 			return new Vector(a.x * value, a.y * value);
 		}
@@ -230,6 +234,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public static Ray operator * (double val, Ray a) {
 			return a * val;
+		}
+
+		public static Ray operator - (Ray r) {
+			return new Ray(r.position, -r.direction);
 		}
 
 		public Vector? intersect(Ray o) {

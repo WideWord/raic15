@@ -71,8 +71,6 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public static double vehicleAngularSpeedFactor { get { return game.CarAngularSpeedFactor; } }
 
-		public static int currentTick { get { return world.Tick; } }
-
 		public static void setConstants(Game _game, World _world) {
 			game = _game;
 			world = _world;

@@ -8,45 +8,25 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	public class ManagedVehicle : Vehicle {
 
 		private VehicleDriver driver = new VehicleDriver();
+		private Tile currentTile;
 		private int currentWaypoint = 0;
 
-		private VirtualVehicle virtualVehicle;
-		private bool initialized = false;
+		private LinkedList<PathUtil.TilePathNode> path;
 
 		public void tick(Move move) {
 
-			/*var nextWaypointCoords = MyStrategy.waypoints[(currentWaypoint + 1) % MyStrategy.waypoints.Length];
-			var nextWaypointTile = MyStrategy.map.tileAt(nextWaypointCoords[0], nextWaypointCoords[1]);
-
-			if (nextWaypointTile.rect.contains(position)) {
+			if (MyStrategy.tileAtWaypoint(currentWaypoint + 1).rect.contains(position)) {
 				currentWaypoint += 1;
 			}
 
-			var path = PathUtil.findPathFromWaypoints(MyStrategy.waypoints, MyStrategy.map, position, currentWaypoint + 1);
-	
-			driver.drive(this, path.First, move);
-			*/
-
-
-			if (Constants.currentTick > 300) {
-				if (!initialized) {
-
-					virtualVehicle = new VirtualVehicle(this);
-
-					initialized = true;
-				} else {
-				
-					move.EnginePower = -1.0;
-					move.WheelTurn = 0.5;
-
-					virtualVehicle.simulateTick(-1.0, 0.5);
-
-					Console.WriteLine("{0} {1} {2}", (position - virtualVehicle.position).length, steeringAngle, virtualVehicle.steeringAngle);
-
-					virtualVehicle.position.draw(0xFF0000);
-				
-				}
+			var _currentTile = MyStrategy.map.tileAt(position);
+			if (currentTile != _currentTile) {
+				currentTile = _currentTile;
+				path = PathUtil.findPathFromWaypoints(MyStrategy.waypoints, MyStrategy.map, position, currentWaypoint + 1);
 			}
+
+			driver.drive(this, path, move);
+
 		}	
 
 	}

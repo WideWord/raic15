@@ -98,15 +98,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		}
 			
 		public struct PathNode {
-			public int waypointIndex;
 			public Vector position;
+			public double importance;
+
 			public PathNode(Vector pos) {
 				position = pos;
-				waypointIndex = -1;
-			}
-			public PathNode(Vector pos, int waypointIndex) {
+				importance = 0;
+            }
+			
+			public PathNode(Vector pos, double importance) {
 				position = pos;
-				this.waypointIndex = waypointIndex;
+				this.importance = importance;
 			}
 		}
 
@@ -135,7 +137,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					}
 				}
 
-				path.AddLast(new PathNode(position, currentTileNode.Value.waypointIndex));
+				path.AddLast(new PathNode(position));
 
 				currentTileNode = currentTileNode.Next;
 			}
@@ -147,12 +149,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			PathNode lastPoint = path.First.Value;
 
 			foreach (var point in path) {
-				Debug.fillCircle(point.position, 25, 0xFF0000);
-				if (point.waypointIndex != -1) {
-					Debug.print(point.position + new Vector(50, 50), "" + point.waypointIndex, 0xFF0000);
-				}
+				Debug.fillCircle(point.position, 25, color);
 
-				Debug.line(lastPoint.position, point.position, 0xFF0000);
+				Debug.line(lastPoint.position, point.position, color);
 				lastPoint = point;
 			}
 		}
