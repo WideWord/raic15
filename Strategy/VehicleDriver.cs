@@ -22,6 +22,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public void drive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
 
+			Vector last = tilePath.First.Value.tile.center;
+
+			int color = 0x0000FF;
+
+			foreach (var tile in tilePath) {
+				var pos = tile.tile.center;
+
+				Debug.line(last, pos, color);
+				pos.draw(color);
+
+				color -= 0x8;
+
+				last = pos;
+			}
+
 			foreach (var strategy in strategies) {
 				if (strategy.tryDrive(vehicle, tilePath, move)) {
 
@@ -232,7 +247,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var turningAngle = turningFrom.angleTo(turningTo);
 
-			var target = tilePath.First.Value.tile.center - turningTo * Constants.tileSize * 0.35;
+			var target = tilePath.First.Value.tile.center - turningTo * Constants.tileSize * 0.15;
 
 
 			if (vehicle.forward * turningFrom > 0) {

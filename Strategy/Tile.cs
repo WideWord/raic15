@@ -40,7 +40,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			switch (dir) {
 			case AxisDirection.down:
 				switch (type) {
-				case TileType.BottomHeadedT:
+				case TileType.TopHeadedT:
 				case TileType.Empty:
 				case TileType.Horizontal:
 				case TileType.LeftBottomCorner:
@@ -52,7 +52,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				}
 			case AxisDirection.up:
 				switch (type) {
-				case TileType.TopHeadedT:
+				case TileType.BottomHeadedT:
 				case TileType.Empty:
 				case TileType.Unknown:
 				case TileType.Horizontal:
@@ -67,7 +67,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				switch (type) {
 				case TileType.Empty:
 				case TileType.Unknown:
-				case TileType.LeftHeadedT:
+				case TileType.RightHeadedT:
 				case TileType.Vertical:
 				case TileType.LeftTopCorner:
 				case TileType.LeftBottomCorner:
@@ -79,7 +79,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				switch (type) {
 				case TileType.Empty:
 				case TileType.Unknown:
-				case TileType.RightHeadedT:
+				case TileType.LeftHeadedT:
 				case TileType.Vertical:
 				case TileType.RightTopCorner:
 				case TileType.RightBottomCorner:
