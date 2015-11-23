@@ -31,6 +31,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	}
 
+
+	//
+	// [ ]
+	// [ ]
+	// [ ]
+	// [*]
+	//
 	public class LineRoadStrategy : VehicleDriverStrategy {
 
 		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
@@ -89,9 +96,54 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	}
 
+	//
+	//   [ ][ ][ ]
+	//   [*]
+	//
+	//
 	public class JustBeforeTurningToLineStrategy : VehicleDriverStrategy {
 
-		
+		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+
+			AxisDirection dir;
+			var currentTile = MyStrategy.map.tileAt(vehicle.position);
+
+			Vector turningTo;
+			Vector turningFrom;
+
+			{
+				var node = tilePath.First;
+
+				var first = node.Value.tile;
+
+				node = node.Next;
+
+				var second = node.Value.tile;
+
+				node = node.Next;
+
+				var third = node.Value.tile;
+
+				var firstToSecond = first.directionForTile(second).Value;
+
+				turningTo = new Vector(firstToSecond);
+
+				if (firstToSecond != second.directionForTile(third)) {
+					return false;
+				}
+
+				var currentToFirst = currentTile.directionForTile(first).Value;
+				if (currentToFirst.isSameAxis(firstToSecond)) {
+					return false;
+				}
+
+				turningFrom = new Vector(currentToFirst);
+
+			}
+
+			if (turningFrom + turningTo)
+
+		}
 
 	}
 }
