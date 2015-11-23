@@ -68,14 +68,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		public double x { get; private set; }
 		public double y { get; private set; }
 
-		public Vector(double _x, double _y) {
+		public Vector(double _x, double _y) : this() {
 			x = _x;
 			y = _y;
 		}
 
-		public Vector(AxisDirection dir) {
-			this.x = 0;
-			this.y = 0;
+		public Vector(AxisDirection dir) : this() {
+			x = 0;
+			y = 0;
 			switch (dir) {
 			case AxisDirection.down:
 				this.x = Vector.down.x;
@@ -219,7 +219,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public Ray(Vector position, Vector direction) {
+		public Ray(Vector position, Vector direction) : this() {
 			this.position = position;
 			this.direction = direction;
 		}
@@ -286,7 +286,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		public double fromAngle { get; private set; }
 		public double toAngle { get; private set; }
 
-		public Arc(Vector position, double _raduis, double fromAngle, double toAngle) {
+		public Arc(Vector position, double _raduis, double fromAngle, double toAngle) : this() {
 			while (fromAngle > Math.PI)
 				fromAngle -= Math.PI * 2;
 			while (fromAngle < -Math.PI)
@@ -473,7 +473,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public Vector forward { get { return Vector.fromAngle(angle); } }
 
-		public FreeRect(Vector pos, double width, double height, double angle) {
+		public FreeRect(Vector pos, double width, double height, double angle) : this() {
 			position = pos;
 			this.width = width;
 			this.height = height;

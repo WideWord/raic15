@@ -59,11 +59,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				var intersection = tile.intersect(ray);
 
 				if (intersection != null) {
-					intersection?.draw(0xFF0000);
 					return intersection;
 				}
+					
 
-				var dir = tile.rect.borderAnyIntersectionDirection(ray, lastDir?.back());
+				var dir = tile.rect.borderAnyIntersectionDirection(ray, (lastDir == null)?(null):(lastDir.Value.back() as AxisDirection?));
 
 				if (dir == null)
 					return null;

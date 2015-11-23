@@ -32,7 +32,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
-		public VirtualVehicle(Vehicle vehicle) {
+		public VirtualVehicle(Vehicle vehicle) : this() {
 			position = vehicle.position;
 			angle = vehicle.angle;
 			speed = vehicle.speed;
