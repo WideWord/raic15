@@ -59,7 +59,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				var intersection = tile.intersect(ray);
 
 				if (intersection != null) {
-					intersection?.draw(0xFF0000);
+					//zintersection?.draw(0xFF0000);
 					return intersection;
 				}
 
@@ -74,6 +74,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				lastDir = dir;
 
+			}
+		}
+
+		public bool isIntersectRoughly(Ray ray) {
+			var tile = tileAt(ray.position);
+			AxisDirection? lastDir = null;
+
+			while (true) {
+
+				var dir = tile.rect.borderAnyIntersectionDirection(ray, lastDir?.back());
+
+
+
+				if (dir == null)
+					return false;
+				else if (!tile.canGoInDirection(dir.Value)) {
+					return true;
+				}
+
+				tile = tile.nextTileInDirection(dir.Value);
+				if (tile == null)
+					return false;
+
+				lastDir = dir;
 			}
 		}
 
