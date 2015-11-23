@@ -65,6 +65,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				while (current != from) {
 					list.AddFirst(new TilePathNode(current));
 					current = current.nextTileInDirection(backDir[current.posX, current.posY]);
+					if (current == null)
+						return list;
 				}
 			}
 
