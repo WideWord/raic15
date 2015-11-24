@@ -59,6 +59,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
+		public double steeringAngleForDirection(Vector direction) {
+			return forward.angleTo(direction) * 4 * Math.Sign(speed * forward);
+		}
+
 		public CarType type {
 			get {
 				return car.Type;

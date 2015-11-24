@@ -16,6 +16,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			strategies.AddLast(new LineRoadStrategy());
 			strategies.AddLast(new JustBeforeTurningToLineStrategy());
 			strategies.AddLast(new FromLineToTurn());
+			strategies.AddLast(new SmoothDiagonalTurning());
 
 			strategies.AddLast(new BackupStrategy());
 		}
@@ -115,24 +116,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var dirVec = new Vector(dir);
 
-			if (vehicle.forward * dirVec < 0.3) {
-
-				var power = 1.0;
-				if (vehicle.speed.length > 12) {
-					power = 0.1;
-				}
-
-				if (MyStrategy.map.intersect(-vehicle.forwardRay * Constants.vehicleLength * 1.5) == null) {
-					move.EnginePower = power;
-					move.WheelTurn = vehicle.forward.angleTo(dirVec) * 100;
-				} else {
-					move.EnginePower = -power;
-					move.WheelTurn = -vehicle.forward.angleTo(dirVec) * 100;
-				}
-
-			} else {
+			if (vehicle.forward * dirVec > 0.3) {
 				move.EnginePower = 1;
-				move.WheelTurn = vehicle.forward.angleTo(dirVec) * 4;
+				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
+			} else {
+				move.EnginePower = 0.2;
+				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
 			}
 			move.IsBrake = false;
 
@@ -159,13 +148,22 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			{
 				var node = tilePath.First;
 
+				if (node == null)
+					return false;
+
 				var first = node.Value.tile;
 
 				node = node.Next;
 
+				if (node == null)
+					return false;
+
 				var second = node.Value.tile;
 
 				node = node.Next;
+
+				if (node == null)
+					return false;
 
 				var third = node.Value.tile;
 
@@ -195,7 +193,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 			var turn = turningTo + turningFrom;
-			move.WheelTurn = vehicle.forward.angleTo(turn) * 2;
+			move.WheelTurn = vehicle.steeringAngleForDirection(turn);
 
 			return true;
 
@@ -221,13 +219,22 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			{
 				var node = tilePath.First;
 
+				if (node == null)
+					return false;
+
 				var first = node.Value.tile;
 
 				node = node.Next;
 
+				if (node == null)
+					return false;
+
 				var second = node.Value.tile;
 
 				node = node.Next;
+
+				if (node == null)
+					return false;
 
 				var third = node.Value.tile;
 
@@ -305,6 +312,75 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			return true;
 
+		}
+
+	}
+
+	//
+	//     [ ]
+	//  [ ][ ]
+	//  [*]
+	//
+	//
+	public class SmoothDiagonalTurning : VehicleDriverStrategy {
+
+		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+
+			var currentTile = MyStrategy.map.tileAt(vehicle.position);
+			Vector target;
+
+			{
+				var node = tilePath.First;
+
+				if (node == null)
+					return false;
+
+				var first = node.Value.tile;
+
+				node = node.Next;
+
+				if (node == null)
+					return false;
+
+				var second = node.Value.tile;
+
+				node = node.Next;
+
+				if (node == null)
+					return false;
+
+				var third = node.Value.tile;
+			
+				target = third.center;
+
+				var currentToFirst = currentTile.directionForTile(first).Value;
+				var firstToSecond = first.directionForTile(second).Value;
+				var secondToThird = second.directionForTile(third).Value;
+
+				if (currentToFirst != secondToThird) {
+					return false;
+				}
+
+				if (firstToSecond.isSameAxis(currentToFirst)) {
+					return false;
+				}
+
+			}
+
+			var vehicleToTarget = target - vehicle.position;
+
+			if (vehicle.forward * vehicleToTarget < 0.5) {
+				if (vehicle.speed.length > 10) {
+					move.IsBrake = true;
+				}
+				move.EnginePower = 0.3;
+			} else {
+				move.EnginePower = 1;
+			}
+			move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
+			move.IsBrake = false;
+
+			return true;
 		}
 
 	}
