@@ -21,22 +21,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			strategies.AddLast(new BackupStrategy());
 		}
 
-		public void drive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
-
-			Vector last = tilePath.First.Value.tile.center;
-
-			int color = 0x0000FF;
-
-			foreach (var tile in tilePath) {
-				var pos = tile.tile.center;
-
-				Debug.line(last, pos, color);
-				pos.draw(color);
-
-				color -= 0x8;
-
-				last = pos;
-			}
+		public void drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+			
 
 			foreach (var strategy in strategies) {
 				if (strategy.tryDrive(vehicle, tilePath, move)) {
@@ -53,18 +39,18 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public interface VehicleDriverStrategy {
 
-		bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move);
+		bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
 
 	}
 
 	public class GetBackStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (vehicle.speed.length > 5)
 				return false;
 
-			var target = tilePath.First.Value.tile.center;
+			var target = tilePath[0].center;
 
 			if (MyStrategy.map.intersect(vehicle.forwardRay * Constants.vehicleLength * 2) != null) {
 				move.IsBrake = false;
@@ -86,31 +72,18 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class LineRoadStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			AxisDirection dir;
 
 			{
 				var current = MyStrategy.map.tileAt(vehicle.position);
 
-				var node = tilePath.First;
-				if (node == null)
-					return false;
+				dir = current.directionForTile(tilePath[0]) ?? AxisDirection.up;
 
-				dir = current.directionForTile(node.Value.tile) ?? AxisDirection.up;
-
-				for (int i = 0; i < 2 && node != null; ++i) {
-
-					var next = node.Next;
-
-					if (next == null) {
-						break;
-					}
-
-					if (node.Value.tile.directionForTile(next.Value.tile) != dir)
+				for (int i = 1; i < 2 && i < tilePath.Count; ++i) {
+					if (tilePath[i - 1].directionForTile(tilePath[i]) != dir)
 						return false;
-
-					node = next;
                 }
 			}
 
@@ -138,7 +111,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class JustBeforeTurningToLineStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+
+			if (tilePath.Count < 3)
+				return false;
 
 			var currentTile = MyStrategy.map.tileAt(vehicle.position);
 
@@ -146,36 +122,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			Vector turningFrom;
 
 			{
-				var node = tilePath.First;
-
-				if (node == null)
-					return false;
-
-				var first = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var second = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var third = node.Value.tile;
-
-				var firstToSecond = first.directionForTile(second).Value;
+				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
 
 				turningTo = new Vector(firstToSecond);
 
-				if (firstToSecond != second.directionForTile(third)) {
+				if (firstToSecond != tilePath[1].directionForTile(tilePath[2])) {
 					return false;
 				}
 
-				var currentToFirst = currentTile.directionForTile(first).Value;
+				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
 				if (currentToFirst.isSameAxis(firstToSecond)) {
 					return false;
 				}
@@ -209,7 +164,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class FromLineToTurn : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+
+
+			if (tilePath.Count < 3)
+				return false;
 
 			var currentTile = MyStrategy.map.tileAt(vehicle.position);
 
@@ -217,30 +176,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			Vector turningFrom;
 
 			{
-				var node = tilePath.First;
 
-				if (node == null)
-					return false;
-
-				var first = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var second = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var third = node.Value.tile;
-
-				var currentToFirst = currentTile.directionForTile(first).Value;
-				var firstToSecond = first.directionForTile(second).Value;
-				var secondToThird = second.directionForTile(third).Value;
+				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
+				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
+				var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
 
 				if (currentToFirst != firstToSecond)
 					return false;
@@ -251,10 +190,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				turningFrom = new Vector(currentToFirst);
 				turningTo = new Vector(secondToThird);
 			}
-
-			var turningAngle = turningFrom.angleTo(turningTo);
-
-			var target = tilePath.First.Value.tile.center - turningTo * Constants.tileSize * 0.15;
+				
+			var target = tilePath[0].center - turningTo * Constants.tileSize * 0.15;
 
 
 			if (vehicle.forward * turningFrom > 0) {
@@ -324,38 +261,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class SmoothDiagonalTurning : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+
+
+			if (tilePath.Count < 3)
+				return false;
 
 			var currentTile = MyStrategy.map.tileAt(vehicle.position);
 			Vector target;
 
 			{
-				var node = tilePath.First;
+				target = tilePath[2].center;
 
-				if (node == null)
-					return false;
-
-				var first = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var second = node.Value.tile;
-
-				node = node.Next;
-
-				if (node == null)
-					return false;
-
-				var third = node.Value.tile;
-			
-				target = third.center;
-
-				var currentToFirst = currentTile.directionForTile(first).Value;
-				var firstToSecond = first.directionForTile(second).Value;
-				var secondToThird = second.directionForTile(third).Value;
+				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
+				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
+				var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
 
 				if (currentToFirst != secondToThird) {
 					return false;
@@ -387,9 +307,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public class BackupStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, LinkedList<PathUtil.TilePathNode> tilePath, Move move) {
+		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
-			var nextTile = tilePath.First.Value.tile;
+			var nextTile = tilePath[0];
 			nextTile.draw(0xFF0000);
 			nextTile.center.draw(0xFF1010);
 

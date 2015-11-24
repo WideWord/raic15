@@ -20,14 +20,29 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 			var _currentTile = MyStrategy.map.tileAt(position);
-			if (currentTile != _currentTile) {
+			if (_currentTile != currentTile) {
 				currentTile = _currentTile;
-				path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+
+				if (path == null) {
+					path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+				} else {
+					if (path.tilePath[0].rect.contains(position)) {
+						path.tilePath.RemoveAt(0);
+
+						if (path.tilePath.Count < 10) {
+							path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+						}
+					} else {
+						path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+					}
+
+
+				}
 			}
 
 			path.draw(0xFF0000);
 
-			//driver.drive(this, path, move);
+			driver.drive(this, path.tilePath, move);
 
 		}	
 

@@ -5,23 +5,19 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public class TilePath {
 
-		private LinkedList<Tile> tilePath = new LinkedList<Tile>();
+		public List<Tile> tilePath { get; private set; }
 
 		public TilePath(int[][] waypoints, RoadMap roadMap, Vehicle vehicle, int skipWaypoints = 1) {
 
-			Tile from = roadMap.tileAt(vehicle.position);
+			tilePath = new List<Tile>();
 
-			Vector dir;
+			var from = roadMap.tileAt(vehicle.position);
 
-			if (vehicle.speed.length < 10) {
-				dir = vehicle.forward;
-			} else {
-				dir = vehicle.speed.normalized;
-			}
+			var dir = vehicle.forward;
 
 			int waypointsCount = waypoints.Length;
 
-			for (int waypointIndex = skipWaypoints, end = waypointsCount * 2 + 1; waypointIndex < end; ++waypointIndex) {
+			for (int waypointIndex = skipWaypoints, end = waypointsCount * 2 + 1; waypointIndex < end && tilePath.Count < 10; ++waypointIndex) {
 
 
 				Tile to = roadMap.tileAt(waypoints[waypointIndex % waypointsCount][0], waypoints[waypointIndex % waypointsCount][1]);
@@ -50,30 +46,34 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var backDir = new AxisDirection[map.width, map.height];
 
-			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
-				if (!from.canGoInDirection(dir))
-					continue;
+			{
+				Vector speed = speedDir;
 
-				var next = from.nextTileInDirection(dir);
+				foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+					if (!from.canGoInDirection(dir))
+						continue;
 
-				if (next == null)
-					continue;
+					var next = from.nextTileInDirection(dir);
 
-				cost[next.posX, next.posY] = 1;
-				backDir[next.posX, next.posY] = dir.back();
-				q.Enqueue(next);
+					if (next == null)
+						continue;
+
+					cost[next.posX, next.posY] = (speed * new Vector(dir)) * 0.5 + 1;
+					backDir[next.posX, next.posY] = dir.back();
+					q.Enqueue(next);
+				}
 			}
 
 			while (q.Count > 0) {
 				var cur = q.Dequeue();
 
-				Vector speed = new Vector(backDir[cur.posX, cur.posY]);
+				Vector speed = new Vector(backDir[cur.posX, cur.posY].back());
 				{
 					var prev = cur.nextTileInDirection(backDir[cur.posX, cur.posY]);
 					if (prev == from) {
 						speed += speedDir;
 					} else {
-						speed += new Vector(backDir[prev.posX, prev.posY]);
+						speed += new Vector(backDir[prev.posX, prev.posY].back());
 					}
 				}
 				speed = speed.normalized;
@@ -87,7 +87,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					if (next == null)
 						continue;
 
-					var nextCost = cost[cur.posX, cur.posY] + (speed * new Vector(dir)) * 0.5 + 1;
+					var nextCost = cost[cur.posX, cur.posY] + (speed * new Vector(dir)) * -0.7   + 1;
 
 					if (nextCost < cost[next.posX, next.posY]) {
 						cost[next.posX, next.posY] = nextCost;
@@ -111,18 +111,20 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 
 				foreach (var tile in localPath) {
-					tilePath.AddLast(tile);
+					tilePath.Add(tile);
 				}
 
 			}
 
-			Vector retSpeed = new Vector(backDir[to.posX, to.posY]);
+			Vector retSpeed = new Vector(backDir[to.posX, to.posY].back());
 			{
 				var prev = to.nextTileInDirection(backDir[to.posX, to.posY]);
 				if (prev == from) {
 					retSpeed += speedDir;
 				} else if (prev != null) {
-					retSpeed += new Vector(backDir[prev.posX, prev.posY]);
+					retSpeed += new Vector(backDir[prev.posX, prev.posY].back());
+				} else {
+					retSpeed += speedDir;
 				}
 
 				retSpeed = retSpeed.normalized;
@@ -144,6 +146,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				last = tile;
 			}
 		}
+
 	}
 }
 
