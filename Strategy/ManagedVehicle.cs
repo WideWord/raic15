@@ -11,7 +11,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		private Tile currentTile;
 		private int currentWaypoint = 0;
 
-		private LinkedList<PathUtil.TilePathNode> path;
+		private TilePath path;
 
 		public void tick(Move move) {
 
@@ -22,10 +22,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			var _currentTile = MyStrategy.map.tileAt(position);
 			if (currentTile != _currentTile) {
 				currentTile = _currentTile;
-				path = PathUtil.findPathFromWaypoints(MyStrategy.waypoints, MyStrategy.map, position, currentWaypoint + 1);
+				path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
 			}
 
-			driver.drive(this, path, move);
+			path.draw(0xFF0000);
+
+			//driver.drive(this, path, move);
 
 		}	
 
