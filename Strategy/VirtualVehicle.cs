@@ -71,6 +71,38 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower - enginePower, Constants.maxEnginePowerChange), 1.0);
 			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(newSteeringAngle - steeringAngle, Constants.maxSteeringAngleChange), 1.0);
 		} 
+
+		public void simulateTickRoughly(double newEnginePower, double newSteeringAngle) {
+
+			double physicsTicks = 1;
+
+			double physicsTickFactor = 1 / physicsTicks;
+
+			var acceleration = forward * Constants.getAcceleration(type, enginePower) * physicsTickFactor;
+
+			var airFriction = Math.Pow(1 - Constants.vehicleMovementAirFriction, physicsTickFactor);
+
+			angularSpeed = Constants.vehicleAngularSpeedFactor * steeringAngle * (speed * forward) * physicsTickFactor;
+			
+			position += speed * physicsTickFactor;
+			speed += acceleration;
+			speed *= airFriction;
+
+			var lengthFriction =
+				Math.Max(Math.Min(speed * forward, Constants.vehicleLengthFriction * physicsTickFactor), -Constants.vehicleLengthFriction * physicsTickFactor) * forward;
+
+			var crossFriction =
+				Math.Max(Math.Min(speed % forward, Constants.vehicleCrossFriction * physicsTickFactor), -Constants.vehicleCrossFriction * physicsTickFactor) * forward.rotate(-Math.PI * 0.5);
+
+			speed -= lengthFriction;
+			speed -= crossFriction;
+
+			angle += angularSpeed * physicsTickFactor;
+			
+
+			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower - enginePower, Constants.maxEnginePowerChange * physicsTickFactor), 1.0);
+			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(newSteeringAngle - steeringAngle, Constants.maxSteeringAngleChange * physicsTickFactor), 1.0);
+		}
 	}
 }
 
