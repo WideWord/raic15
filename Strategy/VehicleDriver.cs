@@ -430,13 +430,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			var turningFrom = new Vector(currentToFirst);
 			var turningTo = new Vector(firstToSecond);
 
-			if (vehicle.speed.length > 10 && vehicle.forward * new Vector(currentToFirst) > 0.5) {
+			if (vehicle.speed.length > 10) {
 
 				var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
 
 				var backWall = new Ray(
-					tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize,
+					tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
 					turningTo * Constants.tileSize * 2
 				);
 
@@ -483,8 +483,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 			}
 
-			move.EnginePower = 0;
-			move.WheelTurn = vehicle.steeringAngleForDirection(turningFrom);
+			move.EnginePower = 1;
+			move.WheelTurn = vehicle.steeringAngleForDirection(turningTo);
 			move.IsBrake = false;
 			return true;
 		}
