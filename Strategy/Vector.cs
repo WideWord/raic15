@@ -475,8 +475,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public FreeRect(Vector pos, double width, double height, double angle) : this() {
 			position = pos;
-			this.width = width;
-			this.height = height;
+			this.width = width / 2;
+			this.height = height / 2;
 			this.angle = angle;
 		}
 
@@ -484,23 +484,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			switch (dir) {
 			case AxisDirection.down:
 				return Ray.line(
-					(position + new Vector(-width, height)).rotate(angle), 
-					(position + new Vector(width, height)).rotate(angle)
+					(position + new Vector(-width, height).rotate(angle)), 
+					(position + new Vector(width, height).rotate(angle))
 				);
 			case AxisDirection.left:
 				return Ray.line(
-					(position + new Vector(-width, height)).rotate(angle), 
-					(position + new Vector(-width, -height)).rotate(angle)
+					(position + new Vector(-width, height).rotate(angle)), 
+					(position + new Vector(-width, -height).rotate(angle))
 				);
 			case AxisDirection.right:
 				return Ray.line(
-					(position + new Vector(width, height)).rotate(angle), 
-					(position + new Vector(width, -height)).rotate(angle)
+					(position + new Vector(width, height).rotate(angle)), 
+					(position + new Vector(width, -height).rotate(angle))
 				);
 			case AxisDirection.up:
 				return Ray.line(
-					(position + new Vector(-width, -height)).rotate(angle), 
-					(position + new Vector(width, -height)).rotate(angle)
+					(position + new Vector(-width, -height).rotate(angle)), 
+					(position + new Vector(width, -height).rotate(angle))
 				);
 			}
 			return new Ray(Vector.up, Vector.up);
@@ -530,7 +530,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-
+		public void draw(int color) {
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = edgeInDirection(dir);
+				edge.draw(color);
+			}
+		}
 
 	}
 

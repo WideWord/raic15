@@ -26,7 +26,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
-		public FreeRect Rect {
+		public FreeRect rect {
 			get {
 				return new FreeRect(position, Constants.vehicleLength, Constants.vehicleWidth, angle);
 			}
