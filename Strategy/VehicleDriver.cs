@@ -262,15 +262,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
 				);
 
-				innerSide1.draw(0x00FF00);
+				//innerSide1.draw(0x00FF00);
 
 				var innerSide2 = new Ray(innerSide1.position + turningFrom * Constants.tileSize, innerSide1.direction);
 
-				innerSide2.draw(0x00FF00);
+				//innerSide2.draw(0x00FF00);
 
 				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5 + turningFrom * Constants.tileSize, Constants.roadMargin);
 
-				innerCircle.draw(0x00FF00);  
+				//innerCircle.draw(0x00FF00);  
 
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
@@ -287,15 +287,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					vv.position.draw(0xFF0000); 
-					vv.rect.draw(0x0000FF);
+					//vv.position.draw(0xFF0000); 
+					//vv.rect.draw(0x0000FF);
 				}
 
 			}
 
 				
 			var target = currentTile.center + turningFrom * Constants.tileSize * 0.5 - turningTo * Constants.tileSize * 0.2;
-			target.draw(0xFF1010);
+			//target.draw(0xFF1010);
 
 			move.WheelTurn = vehicle.steeringAngleForDirection(target - vehicle.position);
 			move.EnginePower = 1;
