@@ -18,7 +18,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
         private Direction? startingDirection;
 
         public RemoteProcessClient(string host, int port) {
-            client = new TcpClient(host, port) {
+               client = new TcpClient(host, port) {
                 SendBufferSize = BufferSizeBytes, ReceiveBufferSize = BufferSizeBytes, NoDelay = true
             };
 
