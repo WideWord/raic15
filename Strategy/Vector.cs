@@ -410,6 +410,57 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 	}
 
+	public struct Circle {
+
+		public Vector position { get; private set; }
+		public double radius { get; private set; }
+
+		public Circle(Vector pos, double rad) : this() {
+			position = pos;
+			radius = rad;
+		}
+
+		public bool isIntersect(Ray ray) {
+
+			var e = ray.position;
+			var d = ray.direction;
+			var f = e - position;
+
+			var a = d * d;
+			var b = 2 * (f * d);
+			var c = (f * f) - radius * radius;
+
+			var D = b * b - 4 * a * c;
+
+			if (D < 0)
+				return false;
+
+			if (D == 0) { // impossible
+				D = 0.00001;
+			}
+
+			var sD = Math.Sqrt(D);
+			var a2 = a * 2;
+
+			var t1 = (-b + sD) / a2;
+			var t2 = (-b - sD) / a2;
+
+			var p1 = ray.position + ray.direction * t1;
+			var p2 = ray.position + ray.direction * t2;
+
+
+			var havePoint1 = t1 >= 0 && t1 <= 1;
+			var havePoint2 = t2 >= 0 && t2 <= 1;
+
+			return havePoint1 || havePoint2;
+		}
+
+		public void draw(int color) {
+			Debug.circle(position, radius, color);
+		}
+
+	}
+
 	public struct Rect {
 
 		public Vector min;
@@ -475,8 +526,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public FreeRect(Vector pos, double width, double height, double angle) : this() {
 			position = pos;
-			this.width = width;
-			this.height = height;
+			this.width = width / 2;
+			this.height = height / 2;
 			this.angle = angle;
 		}
 
@@ -484,23 +535,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			switch (dir) {
 			case AxisDirection.down:
 				return Ray.line(
-					(position + new Vector(-width, height)).rotate(angle), 
-					(position + new Vector(width, height)).rotate(angle)
+					(position + new Vector(-width, height).rotate(angle)), 
+					(position + new Vector(width, height).rotate(angle))
 				);
 			case AxisDirection.left:
 				return Ray.line(
-					(position + new Vector(-width, height)).rotate(angle), 
-					(position + new Vector(-width, -height)).rotate(angle)
+					(position + new Vector(-width, height).rotate(angle)), 
+					(position + new Vector(-width, -height).rotate(angle))
 				);
 			case AxisDirection.right:
 				return Ray.line(
-					(position + new Vector(width, height)).rotate(angle), 
-					(position + new Vector(width, -height)).rotate(angle)
+					(position + new Vector(width, height).rotate(angle)), 
+					(position + new Vector(width, -height).rotate(angle))
 				);
 			case AxisDirection.up:
 				return Ray.line(
-					(position + new Vector(-width, -height)).rotate(angle), 
-					(position + new Vector(width, -height)).rotate(angle)
+					(position + new Vector(-width, -height).rotate(angle)), 
+					(position + new Vector(width, -height).rotate(angle))
 				);
 			}
 			return new Ray(Vector.up, Vector.up);
@@ -530,7 +581,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
+		public bool isIntersect(Circle circle) {
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = edgeInDirection(dir);
+				if (circle.isIntersect(edge)) {
+					return true;
+				}
+			}
 
+			return false;
+		}
+
+		public void draw(int color) {
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = edgeInDirection(dir);
+				edge.draw(color);
+			}
+		}
 
 	}
 

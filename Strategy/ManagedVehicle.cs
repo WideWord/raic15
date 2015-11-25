@@ -41,7 +41,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 			driver.drive(this, path.tilePath, move);
-
+			path.draw(0xFF0000);
 
 
 		}	
