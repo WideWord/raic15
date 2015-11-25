@@ -144,36 +144,34 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				var vv = new VirtualVehicle(vehicle);
 				var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
-				var innerSide = Ray.line(
-					                currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-									currentTile.center + turningTo * (Constants.tileSize * 0.5 + Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5
-				                );
+				var innerSide1 = Ray.line(
+					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
+					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
+				);
 
-				var fromAngle = turningTo.angle;
-				var toAngle = turningFrom.angle;
+				innerSide1.draw(0x00FF00);
 
-				if (fromAngle > toAngle) {
-					var tmp = fromAngle;
-					fromAngle = toAngle;
-					toAngle = tmp;
-				}
+				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin);
 
-				var innerArc = new Arc(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin, fromAngle, toAngle);
+				innerCircle.draw(0x00FF00);  
 
-				for (int i = 0; i < 100; ++i) {
+				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
-					if (vv.rect.isIntersect(innerSide))
-						continue;
+					if (vv.rect.isIntersect(innerSide1))
+						break;
 
-					if (vv.rect.isIntersect(innerArc))
-						continue;
+					if (vv.rect.isIntersect(innerCircle))
+						break;
 
-					if (tilePath[1].rect.contains(vv.position )) {
+					if (tilePath[1].rect.contains(vv.position)) {
 						move.EnginePower = 1;
 						move.WheelTurn = steering;
 						move.IsBrake = false;
 						return true;
 					}
+
+					vv.position.draw(0xFF0000); 
+					vv.rect.draw(0x0000FF);
 				}
 
 			}
@@ -246,25 +244,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				innerSide2.draw(0x00FF00);
 
-				var fromAngle = -turningTo.angle;
-				var toAngle = turningFrom.angle;
+				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5 + turningFrom * Constants.tileSize, Constants.roadMargin);
 
-				if (fromAngle > toAngle) {
-					var tmp = fromAngle;
-					fromAngle = toAngle;
-					toAngle = tmp;
-				}
-
-				var innerArc = new Arc(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5 + turningFrom * Constants.tileSize, Constants.roadMargin, fromAngle, toAngle);
-
-				innerArc.draw(0x00FF00);  
+				innerCircle.draw(0x00FF00);  
 
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
 					if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerSide2))
 						break;
 
-					if (vv.rect.isIntersect(innerArc))
+					if (vv.rect.isIntersect(innerCircle))
 						break;
 
 					if (tilePath[2].rect.contains(vv.position)) {
