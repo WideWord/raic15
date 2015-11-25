@@ -164,9 +164,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			}
 
-			if (vehicle.speed.length > 10 && vehicle.forward * turningFrom > 0) {
-				var vv = new VirtualVehicle(vehicle);
-				var steering = Math.Sign(turningFrom.angleTo(turningTo));
+			if (vehicle.speed.length > 10) {
 
 				var innerSide1 = Ray.line(
 					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
@@ -177,37 +175,79 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin);
 
-				innerCircle.draw(0x00FF00);  
+				innerCircle.draw(0x00FF00);
 
-				for (int i = 0; i < 100; ++i) { 
-					vv.simulateTick(1.0, steering);
-					if (vv.rect.isIntersect(innerSide1))
-						break;
+				var backWall = new Ray(tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
+					               turningTo * Constants.tileSize * 2);
 
-					if (vv.rect.isIntersect(innerCircle))
-						break;
+				backWall.draw(0x00FF00);
+	
+				if (vehicle.forward * turningFrom > 0.45) {
+					var vv = new VirtualVehicle(vehicle);
+					var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
-					if (tilePath[1].rect.contains(vv.position)) {
-						move.EnginePower = 1;
-						move.WheelTurn = steering;
-						move.IsBrake = false;
-						return true;
+					for (int i = 0; i < 100; ++i) { 
+						vv.simulateTick(1.0, steering);
+						if (vv.rect.isIntersect(innerSide1))
+							break;
+
+						if (vv.rect.isIntersect(innerCircle))
+							break;
+
+						if (vv.rect.isIntersect(backWall)) {
+							move.IsBrake = true;
+							move.EnginePower = 1;
+							move.WheelTurn = steering;
+							return true;
+						}
+
+						if (tilePath[1].rect.contains(vv.position)) {
+							move.EnginePower = 1;
+							move.WheelTurn = steering;
+							move.IsBrake = false;
+							return true;
+						}
+
+						vv.position.draw(0xFF0000); 
+						vv.rect.draw(0x0000FF);
 					}
+				} else if (vehicle.forward * turningTo > 0.5) {
+					
+					var vv = new VirtualVehicle(vehicle);
+					var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
-					vv.position.draw(0xFF0000); 
-					vv.rect.draw(0x0000FF);
+					for (int i = 0; i < 100; ++i) { 
+						vv.simulateTick(1.0, 0);
+
+						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircle)) {
+
+							move.EnginePower = 1;
+							move.WheelTurn = -steering;
+							move.IsBrake = false;
+
+						}
+
+						if (tilePath[1].rect.contains(vv.position)) {
+							move.EnginePower = 1;
+							move.WheelTurn = 0;
+							move.IsBrake = false;
+							return true;
+						}
+
+						vv.position.draw(0xFF0000); 
+						vv.rect.draw(0x0000FF);
+					}
+				} else {
+					move.IsBrake = true;
+					move.WheelTurn = 0;
+					move.EnginePower = 1;
+					return true;
 				}
 
 			}
 
-			if (vehicle.speed.length > 20) {
-				move.IsBrake = true;
-				move.EnginePower = -1;
-			} else {
-				move.IsBrake = false;
-				move.EnginePower = 1;
-			}
-
+			move.IsBrake = false;
+			move.EnginePower = 1;
 			var turn = turningTo + turningFrom;
 			move.WheelTurn = vehicle.steeringAngleForDirection(turn);
 
