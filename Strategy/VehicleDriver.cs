@@ -75,10 +75,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
+			var current = MyStrategy.map.tileAt(vehicle.position);
+
+
 			AxisDirection dir;
 
 			{
-				var current = MyStrategy.map.tileAt(vehicle.position);
 
 				dir = current.directionForTile(tilePath[0]) ?? AxisDirection.up;
 
@@ -89,6 +91,28 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 			var dirVec = new Vector(dir);
+
+			var last = current;
+
+			foreach (var tile in tilePath) {
+				if (dir.turnLeft() == last.directionForTile(tile)) {
+					var turnVector = new Vector(dir.turnLeft());
+					var dist = (vehicle.position - current.center) * turnVector + 0.15 * Constants.tileSize;
+					dirVec -= turnVector * dist / Constants.tileSize;
+					break;
+				} else if (dir.turnRight() == last.directionForTile(tile)) {
+					var turnVector = new Vector(dir.turnRight());
+					var dist = (vehicle.position - current.center) * turnVector + 0.15 * Constants.tileSize;
+					dirVec -= turnVector * dist / Constants.tileSize;
+					break;
+				} else if (dir != last.directionForTile(tile))
+					break;
+
+				last = tile;
+
+			}
+
+			//new Ray(vehicle.position, dirVec * 500).draw(0x00FF00);
 
 			if (vehicle.forward * dirVec > 0.3) {
 				move.EnginePower = 1;
@@ -149,11 +173,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
 				);
 
-				innerSide1.draw(0x00FF00);
+				//innerSide1.draw(0x00FF00);
 
 				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin);
 
-				innerCircle.draw(0x00FF00);  
+				//innerCircle.draw(0x00FF00);  
 
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
@@ -170,8 +194,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					vv.position.draw(0xFF0000); 
-					vv.rect.draw(0x0000FF);
+					//vv.position.draw(0xFF0000); 
+					//vv.rect.draw(0x0000FF);
 				}
 
 			}
