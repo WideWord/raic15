@@ -39,14 +39,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public abstract class VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
+		public abstract bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
 
-		public void resetState() {}
+		public virtual void resetState() {}
 	}
 
 	public class GetBackStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (vehicle.speed.length > 5)
 				return false;
@@ -73,7 +73,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class LineRoadStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			AxisDirection dir;
 
@@ -112,13 +112,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class JustBeforeTurningToLineStrategy : VehicleDriverStrategy {
 
-		private List<Vector> calculatedPath;
-
-		public void resetState() {
-			calculatedPath = null;
-		}
-
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+	
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (tilePath.Count < 3)
 				return false;
@@ -143,21 +138,6 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 
 				turningFrom = new Vector(currentToFirst);
-
-			}
-
-			if (calculatedPath != null && calculatedPath.Count > 0) {
-				if ((calculatedPath[0] - vehicle.position).length > 3) {
-					calculatedPath = null;
-				} else {
-					calculatedPath.RemoveAt(0);
-					return true;
-				}
-			}
-
-			if (vehicle.speed.length > 20 && vehicle.speed * (turningFrom + turningTo) > 0) {
-				VirtualVehicle veh = new VirtualVehicle(vehicle);
-
 
 			}
 
@@ -186,7 +166,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class FromLineToTurn : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 
 			if (tilePath.Count < 3)
@@ -283,7 +263,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class SmoothDiagonalTurning : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 
 			if (tilePath.Count < 3)
@@ -293,7 +273,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			Vector target;
 
 			{
-				target = tilePath[2].center;
+				
 
 				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
 				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
@@ -306,6 +286,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				if (firstToSecond.isSameAxis(currentToFirst)) {
 					return false;
 				}
+
+				target = tilePath[2].center + (-new Vector(currentToFirst) + new Vector(firstToSecond)) * 0.25;
 
 			}
 
@@ -329,7 +311,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public class BackupStrategy : VehicleDriverStrategy {
 
-		public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			var nextTile = tilePath[0];
 			nextTile.draw(0xFF0000);
