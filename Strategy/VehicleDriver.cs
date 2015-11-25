@@ -17,12 +17,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			strategies.AddLast(new JustBeforeTurningToLineStrategy());
 			strategies.AddLast(new FromLineToTurn());
 			strategies.AddLast(new SmoothDiagonalTurning());
+			strategies.AddLast(new TurnBackStrategy());
 
 			strategies.AddLast(new BackupStrategy());
 		}
 
 		public void drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 			
+
 
 			foreach (var strategy in strategies) {
 				if (strategy.tryDrive(vehicle, tilePath, move)) {
@@ -111,9 +113,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				last = tile;
 
 			}
-
-			//new Ray(vehicle.position, dirVec * 500).draw(0x00FF00);
-
+				
 			if (vehicle.forward * dirVec > 0.3) {
 				move.EnginePower = 1;
 				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
@@ -164,7 +164,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			}
 
-			if (vehicle.speed.length > 20 && vehicle.forward * turningFrom > 0) {
+			if (vehicle.speed.length > 10 && vehicle.forward * turningFrom > 0) {
 				var vv = new VirtualVehicle(vehicle);
 				var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
@@ -173,11 +173,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
 				);
 
-				//innerSide1.draw(0x00FF00);
+				innerSide1.draw(0x00FF00);
 
 				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin);
 
-				//innerCircle.draw(0x00FF00);  
+				innerCircle.draw(0x00FF00);  
 
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
@@ -194,8 +194,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					//vv.position.draw(0xFF0000); 
-					//vv.rect.draw(0x0000FF);
+					vv.position.draw(0xFF0000); 
+					vv.rect.draw(0x0000FF);
 				}
 
 			}
@@ -253,7 +253,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 
-			if (vehicle.speed.length > 20 && vehicle.forward * turningFrom > 0) {
+			if (vehicle.speed.length > 10 && vehicle.forward * turningFrom > 0) {
 				var vv = new VirtualVehicle(vehicle);
 				var steering = Math.Sign(turningFrom.angleTo(turningTo));
 
@@ -262,15 +262,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
 				);
 
-				//innerSide1.draw(0x00FF00);
+				innerSide1.draw(0x00FF00);
 
 				var innerSide2 = new Ray(innerSide1.position + turningFrom * Constants.tileSize, innerSide1.direction);
 
-				//innerSide2.draw(0x00FF00);
+				innerSide2.draw(0x00FF00);
 
 				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5 + turningFrom * Constants.tileSize, Constants.roadMargin);
 
-				//innerCircle.draw(0x00FF00);  
+				innerCircle.draw(0x00FF00);  
 
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
@@ -287,15 +287,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					//vv.position.draw(0xFF0000); 
-					//vv.rect.draw(0x0000FF);
+					vv.position.draw(0xFF0000); 
+					vv.rect.draw(0x0000FF);
 				}
 
 			}
 
 				
 			var target = currentTile.center + turningFrom * Constants.tileSize * 0.5 - turningTo * Constants.tileSize * 0.2;
-			//target.draw(0xFF1010);
 
 			move.WheelTurn = vehicle.steeringAngleForDirection(target - vehicle.position);
 			move.EnginePower = 1;
@@ -356,6 +355,92 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
 			move.IsBrake = false;
 
+			return true;
+		}
+
+	}
+
+	//
+	//
+	// [ ][ ]
+	// [*][ ]
+	//
+	//
+	public class TurnBackStrategy : VehicleDriverStrategy {
+
+		public override bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+
+			var current = MyStrategy.map.tileAt(vehicle.position);
+
+			var currentToFirst = current.directionForTile(tilePath[0]).Value;
+			var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
+			var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
+
+			if (currentToFirst.isSameAxis(firstToSecond))
+				return false;
+
+			if (currentToFirst.back() != secondToThird)
+				return false;
+
+			var turningFrom = new Vector(currentToFirst);
+			var turningTo = new Vector(firstToSecond);
+
+			if (vehicle.speed.length > 10 && vehicle.forward * new Vector(currentToFirst) > 0.5) {
+
+				var steering = Math.Sign(turningFrom.angleTo(turningTo));
+
+
+				var backWall = new Ray(
+					tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize,
+					turningTo * Constants.tileSize * 2
+				);
+
+				var backSideWall = new Ray(
+					backWall.p2 - turningTo * Constants.roadMargin,
+					-turningFrom * (Constants.tileSize * 2 - Constants.roadMargin)
+				);
+
+				var innerWall = new Ray(current.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
+					                turningFrom * Constants.tileSize);
+
+				var innerCircle = new Circle(current.center + (new Vector(currentToFirst) + new Vector(firstToSecond)) * Constants.tileSize * 0.5, Constants.roadMargin);
+
+				backWall.draw(0x00FF00);
+				backSideWall.draw(0x00FF00);
+				innerWall.draw(0x00FF00);
+				innerCircle.draw(0x00FF00);
+
+				var vv = new VirtualVehicle(vehicle);
+
+				for (int i = 0; i < 100; ++i) {
+
+					vv.simulateTick(1.0, steering);
+
+					var rect = vv.rect;
+
+					if (rect.isIntersect(innerWall) || rect.isIntersect(innerCircle)) {
+						move.EnginePower = 1;
+						move.WheelTurn = -steering;
+						move.IsBrake = false;
+						return true;
+					}
+
+					if (rect.isIntersect(backWall) && rect.isIntersect(backSideWall)) {
+						move.IsBrake = true;
+						move.EnginePower = 1;
+						move.WheelTurn = 0;
+						return true;
+					}
+
+					vv.position.draw(0xFF0000); 
+					vv.rect.draw(0x0000FF);
+
+				}
+			}
+
+			move.EnginePower = 0;
+			move.WheelTurn = vehicle.steeringAngleForDirection(turningFrom);
+			move.IsBrake = false;
 			return true;
 		}
 
