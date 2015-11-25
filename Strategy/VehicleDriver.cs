@@ -177,7 +177,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				innerCircle.draw(0x00FF00);
 
-				var backWall = new Ray(tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
+				var innerCircleExtended = new Circle(innerCircle.position, innerCircle.radius + 10);
+
+				var backWall = new Ray(tilePath[0].center  + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
 					               turningTo * Constants.tileSize * 2);
 
 				backWall.draw(0x00FF00);
@@ -219,12 +221,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					for (int i = 0; i < 100; ++i) { 
 						vv.simulateTick(1.0, 0);
 
-						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircle)) {
+						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircleExtended)) {
 
 							move.EnginePower = 1;
 							move.WheelTurn = -steering;
 							move.IsBrake = false;
-
+							return true;
 						}
 
 						if (tilePath[1].rect.contains(vv.position)) {
@@ -409,6 +411,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	public class TurnBackStrategy : VehicleDriverStrategy {
 
 		public override bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+
+			if (tilePath.Count < 3)
+				return false;
 
 			var current = MyStrategy.map.tileAt(vehicle.position);
 
