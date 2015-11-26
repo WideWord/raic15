@@ -209,6 +209,24 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						}
 
 						if (tilePath[1].rect.contains(vv.position)) {
+
+							// защита от слишком быстрого захода в поворот и ударения в заднюю стенку
+
+							for (int j = 0; j < 50; ++j) {
+
+								vv.simulateTick(1, steering);
+								if (vv.rect.isIntersect(backWall)) {
+									move.EnginePower = 1;
+									move.WheelTurn = steering;
+									move.IsBrake = true;
+									return true;
+								}
+
+								vv.position.draw(0x00FF00);
+								vv.rect.draw(0x0000FF);
+
+							}
+
 							move.EnginePower = 1;
 							move.WheelTurn = steering;
 							move.IsBrake = false;
@@ -323,6 +341,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				backWall.draw(0x00FF00);
 
+				var outerSide = new Ray(currentTile.center - turningTo * (Constants.halfTileSize - Constants.roadMargin) - turningFrom * Constants.halfTileSize, turningFrom * Constants.tileSize * 3);
+
+				outerSide.draw(0x00FF00);
+
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
 					if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerSide2))
@@ -330,6 +352,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 					if (vv.rect.isIntersect(innerCircle))
 						break;
+
+					if (vv.rect.isIntersect(outerSide)) {
+						var target = currentTile.center + turningFrom * Constants.tileSize * 1.5;
+
+						move.WheelTurn = steering;
+						move.EnginePower = 1;
+						move.IsBrake = true;
+
+						return true;
+					}
 
 					if (vv.rect.isIntersect(backWall)) {
 						move.EnginePower = 1;
@@ -339,10 +371,29 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					}
 
 					if (tilePath[2].rect.contains(vv.position)) {
+
+						// защита от слишком быстрого захода в поворот и ударения в заднюю стенку
+
+						for (int j = 0; j < 50; ++j) {
+
+							vv.simulateTick(1, steering);
+							if (vv.rect.isIntersect(backWall)) {
+								move.EnginePower = 1;
+								move.WheelTurn = steering;
+								move.IsBrake = true;
+								return true;
+							}
+
+							vv.position.draw(0x00FF00);
+							vv.rect.draw(0x0000FF);
+
+						}
+
 						move.EnginePower = 1;
 						move.WheelTurn = steering;
 						move.IsBrake = false;
 						return true;
+
 					}
 
 					vv.position.draw(0xFF0000); 
@@ -352,9 +403,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 				
-			var target = currentTile.center + turningFrom * Constants.tileSize * 1.5;
 
-			move.WheelTurn = vehicle.steeringAngleForDirection(target - vehicle.position);
+			move.WheelTurn = vehicle.steeringAngleForDirection((currentTile.center + turningFrom * Constants.tileSize * 1.5) - vehicle.position);
 			move.EnginePower = 1;
 			move.IsBrake = false;
 
