@@ -23,6 +23,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		}
 
 		public void drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+			
 
 
 			foreach (var strategy in strategies) {
@@ -30,18 +31,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 					Debug.print(vehicle.position + new Vector(15, 15), strategy.GetType().Name);
 
-					break;
+					return;
 				}
-			}
-
-			VirtualVehicle vv = new VirtualVehicle(vehicle);
-			VirtualVehicle vv2 = new VirtualVehicle(vehicle);
-
-			for (int i = 0; i < 100; ++i) {
-				vv.simulateTickRoughly(0.0, 0.0);
-				vv2.simulateTick(0.0, 0.0);
-				vv2.position.draw(0x00FF00);
-				vv.position.draw(0xFF0000);
 			}
 
 			//throw new Exception("Do not have strategy for this situation");
@@ -49,7 +40,6 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	}
 
 	public abstract class VehicleDriverStrategy {
-
 
 		public abstract bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
 
@@ -88,6 +78,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			var current = MyStrategy.map.tileAt(vehicle.position);
+
 
 			AxisDirection dir;
 
@@ -323,6 +314,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				innerCircle.draw(0x00FF00);  
 
+				var backWall = new Ray(tilePath[1].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * (Constants.tileSize * 0.5), turningTo * 2 * Constants.tileSize);
+
+				backWall.draw(0x00FF00);
+
 				for (int i = 0; i < 100; ++i) { 
 					vv.simulateTick(1.0, steering);
 					if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerSide2))
@@ -330,6 +325,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 					if (vv.rect.isIntersect(innerCircle))
 						break;
+
+					if (vv.rect.isIntersect(backWall)) {
+						move.EnginePower = 1;
+						move.WheelTurn = steering;
+						move.IsBrake = true;
+						return true;
+					}
 
 					if (tilePath[2].rect.contains(vv.position)) {
 						move.EnginePower = 1;
@@ -394,7 +396,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				turningFrom = new Vector(currentToFirst);
 				turningTo = new Vector(firstToSecond);
 
-				target = tilePath[2].center + (-new Vector(currentToFirst) + new Vector(firstToSecond)) * 0.5;
+				target = tilePath[2].center - turningFrom * 0.5 * Constants.tileSize;
 
 			}
 
@@ -458,6 +460,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					vv.position.draw(0xFF0000);
 				}
 
+				move.EnginePower = 1;
+				move.IsBrake = false;
+				move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
+
+				new Ray(vehicle.position, vehicleToTarget).draw(0x00FFFF); 
+
+				return true;
+
 			}
 
 
@@ -480,7 +490,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	//
 	// [ ][ ]
-	// [*][ ]
+	// [*][ ][ ]
 	//
 	//
 	public class TurnBackStrategy : VehicleDriverStrategy {
@@ -495,11 +505,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			var currentToFirst = current.directionForTile(tilePath[0]).Value;
 			var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
 			var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
+			var thirdToFour = tilePath[2].directionForTile(tilePath[3]).Value;
 
 			if (currentToFirst.isSameAxis(firstToSecond))
 				return false;
 
 			if (currentToFirst.back() != secondToThird)
+				return false;
+
+			if (thirdToFour != firstToSecond)
 				return false;
 
 			var turningFrom = new Vector(currentToFirst);
@@ -517,7 +531,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				var backSideWall = new Ray(
 					backWall.p2 - turningTo * Constants.roadMargin,
-					-turningFrom * (Constants.tileSize * 2 - Constants.roadMargin)
+					-turningFrom * (Constants.tileSize - Constants.roadMargin)
 				);
 
 				var innerWall = new Ray(current.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
