@@ -26,7 +26,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				from = to;
 
+				if (waypointIndex == end - 1) {
+					Tile preLast;
+					if (tilePath.Count >= 2) {
+						preLast = tilePath[tilePath.Count - 2];
+					} else {
+						preLast = roadMap.tileAt(vehicle.position);
+					}
+
+					Tile last = tilePath[tilePath.Count - 1];
+
+					var finishDir = preLast.directionForTile(last);
+					if (finishDir != null) {
+						var tile = last;
+						for (int i = 0; i < 4; ++i) {
+							var next = tile.nextTileInDirection(finishDir.Value);
+							if (next == null)
+								break;
+							tilePath.Add(next);
+							tile = next;
+						}
+					}
+				}
 			}
+			
 
 		}
 			
