@@ -8,6 +8,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		public static readonly double turningSmoothCoef = 0.5;
 		public static readonly double roadMargin = 80.0;
 
+		public static double halfTileSize { get { return tileSize * 0.5; } }
+
 		public static readonly int physicsTicks = 10;
 		public static readonly double physicsTickFactor = 1.0 / (double)physicsTicks;
 
@@ -75,7 +77,6 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			game = _game;
 			world = _world;
 		}
-
 	}
 }
 

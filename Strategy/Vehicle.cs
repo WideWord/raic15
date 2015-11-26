@@ -63,6 +63,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			return forward.angleTo(direction) * 4 * Math.Sign(speed * forward);
 		}
 
+		public Vector stabilizationDir(Vector baseDir, Vector sideCenter, Vector sideDir, double sidePosition) {
+			var dist = (position - sideCenter) * sideDir + sidePosition;
+			return baseDir - sideDir * dist / Constants.tileSize;
+		}
+
 		public CarType type {
 			get {
 				return car.Type;

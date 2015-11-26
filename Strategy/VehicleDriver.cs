@@ -190,11 +190,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 					for (int i = 0; i < 100; ++i) { 
 						vv.simulateTick(1.0, steering);
-						if (vv.rect.isIntersect(innerSide1))
-							break;
 
-						if (vv.rect.isIntersect(innerCircle))
-							break;
+
+
+						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircle)) {
+							move.EnginePower = 1;
+							move.WheelTurn = vehicle.steeringAngleForDirection(vehicle.stabilizationDir(turningFrom, currentTile.center, turningTo, -0.15 * Constants.tileSize));
+							move.IsBrake = false;
+							return true;
+						}
+
 
 						if (vv.rect.isIntersect(backWall)) {
 							move.IsBrake = true;
