@@ -25,8 +25,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		}
 
 		public void drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
-			
 
+
+			//defaults
+			move.IsUseNitro = false;
 
 			foreach (var strategy in strategies) {
 				if (strategy.tryDrive(vehicle, tilePath, move)) {
@@ -114,6 +116,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var last = current;
 
+			int lineTilesCtr = 0;
+
 			foreach (var tile in tilePath) {
 				if (dir.turnLeft() == last.directionForTile(tile)) {
 					var turnVector = new Vector(dir.turnLeft());
@@ -128,10 +132,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				} else if (dir != last.directionForTile(tile))
 					break;
 
+				lineTilesCtr += 1;
+
 				last = tile;
 
 			}
 				
+			if (lineTilesCtr >= 8) {
+				move.IsUseNitro = true;
+			}
+
 			if (vehicle.forward * dirVec > 0.3) {
 				move.EnginePower = 1;
 				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
@@ -523,8 +533,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 							vv.simulateTick(1, steering);
 
 							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
-								move.EnginePower = 0;
-								move.IsBrake = false;
+								move.EnginePower = 1;
+								move.IsBrake = true;
 								move.WheelTurn = steering;
 								return true;
 							}
@@ -542,8 +552,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 							vv.simulateTick(1, -steering);
 
 							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
-								move.EnginePower = 0;
-								move.IsBrake = false;
+								move.EnginePower = 1;
+								move.IsBrake = true;
 								move.WheelTurn = -steering;
 								return true;
 							}
