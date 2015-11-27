@@ -50,14 +50,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public class GetBackStrategy : VehicleDriverStrategy {
 
+		private int zeroSpeedTicks = 0;
+
 		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
-			if (vehicle.speed.length > 5)
+			var forceGetBack = false;
+
+			if (MyStrategy.currentTick > 180) {
+				if (vehicle.speed.length < 1) {
+					zeroSpeedTicks += 1;
+				} else {
+					zeroSpeedTicks = 0;
+				}
+
+				if (zeroSpeedTicks > 30) {
+					forceGetBack = true;
+                }
+            }
+
+			if (vehicle.speed.length > 5 && !forceGetBack)
 				return false;
 
 			var target = tilePath[0].center;
 
-			if (MyStrategy.map.intersect(vehicle.forwardRay * Constants.vehicleLength * 2) != null) {
+			if (MyStrategy.map.intersect(vehicle.forwardRay * Constants.vehicleLength * 2) != null || forceGetBack) {
 				move.IsBrake = false;
 				move.EnginePower = -1;
 				move.WheelTurn = -vehicle.forward.angleTo(target - vehicle.position) * 4;
@@ -485,12 +501,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				Circle innerCircle = new Circle(innerSide.p2 + turningTo * Constants.roadMargin, Constants.roadMargin);
 
-				//side.draw(0x00FF00);
-				//back.draw(0x00FF00);
-				//backCircle.draw(0x00FF00);
+				side.draw(0x00FF00);
+				back.draw(0x00FF00);
+				backCircle.draw(0x00FF00);
 
-				//innerSide.draw(0x00FF00);
-				//innerCircle.draw(0x00FF00);
+				innerSide.draw(0x00FF00);
+				innerCircle.draw(0x00FF00);
 
 				var vv = new VirtualVehicle(vehicle);
 
@@ -500,11 +516,39 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					var rect = vv.rect;
 
 					if (rect.isIntersect(side) || rect.isIntersect(back) || rect.isIntersect(backCircle)) {
+
+						vv = new VirtualVehicle(vehicle);
+
+						for (int j = 0; j < 100; ++j) {
+							vv.simulateTick(1, steering);
+
+							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+								move.EnginePower = 0;
+								move.IsBrake = false;
+								move.WheelTurn = steering;
+								return true;
+							}
+						}
+
 						move.EnginePower = 1;
 						move.IsBrake = false;
 						move.WheelTurn = steering;
 						return true;
 					} else if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+
+						vv = new VirtualVehicle(vehicle);
+
+						for (int j = 0; j < 100; ++j) {
+							vv.simulateTick(1, -steering);
+
+							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+								move.EnginePower = 0;
+								move.IsBrake = false;
+								move.WheelTurn = -steering;
+								return true;
+							}
+                        }
+
 						move.EnginePower = 1;
 						move.IsBrake = false;
 						move.WheelTurn = -steering;
@@ -518,8 +562,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					//rect.draw(0x0000FF);
-					//vv.position.draw(0xFF0000);
+					rect.draw(0x0000FF);
+					vv.position.draw(0xFF0000);
 				}
 
 				move.EnginePower = 1;
