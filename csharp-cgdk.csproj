@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Strategy\DistanceMap.cs" />
     <Compile Include="Strategy\RoadMap.cs" />
     <Compile Include="SDK\Model\Bonus.cs" />
     <Compile Include="SDK\Model\BonusType.cs" />
