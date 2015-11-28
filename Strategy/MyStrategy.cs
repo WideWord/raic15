@@ -20,7 +20,6 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 
 		public void Move(Car self, World world, Game game, Move move) {
-			Debug.BeginPost();
 			Constants.SetConstants(game, world);
 			CurrentTick = world.Tick;
 
@@ -39,7 +38,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			currentVehicle.Tick(move);
 
-			Debug.EndPost();
+			Debug.Flush();
         }
     }
 

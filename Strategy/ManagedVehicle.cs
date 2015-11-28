@@ -40,8 +40,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 			}
 			
-			driver.drive(this, path.TileList, move);
-			path.Draw(0xFF0000);
+			driver.Drive(this, path.TileList, move);
+			path.Draw(Color.Red);
 
 
 		}	

@@ -4,59 +4,59 @@ using System.Collections.Generic;
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 	public enum AxisDirection {
-		up, down, left, right
+		Up, Down, Left, Right
 	}
 
 	public static class AxisDirectionExtensions {
 		public static AxisDirection Back(this AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down:
-				return AxisDirection.up;
-			case AxisDirection.left:
-				return AxisDirection.right;
-			case AxisDirection.right:
-				return AxisDirection.left;
-			case AxisDirection.up:
-				return AxisDirection.down;
+			case AxisDirection.Down:
+				return AxisDirection.Up;
+			case AxisDirection.Left:
+				return AxisDirection.Right;
+			case AxisDirection.Right:
+				return AxisDirection.Left;
+			case AxisDirection.Up:
+				return AxisDirection.Down;
 			default:
-				return AxisDirection.down;
+				return AxisDirection.Down;
 			}
 		}
 
 		public static AxisDirection TurnLeft(this AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down: return AxisDirection.right;
-			case AxisDirection.left: return AxisDirection.down;
-			case AxisDirection.right: return AxisDirection.up;
-			case AxisDirection.up: return AxisDirection.left;
-			default: return AxisDirection.down;
+			case AxisDirection.Down: return AxisDirection.Right;
+			case AxisDirection.Left: return AxisDirection.Down;
+			case AxisDirection.Right: return AxisDirection.Up;
+			case AxisDirection.Up: return AxisDirection.Left;
+			default: return AxisDirection.Down;
 			}
 		}
 
 		public static AxisDirection TurnRight(this AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down: return AxisDirection.left;
-			case AxisDirection.left: return AxisDirection.up;
-			case AxisDirection.right: return AxisDirection.down;
-			case AxisDirection.up: return AxisDirection.right;
-			default: return AxisDirection.down;
+			case AxisDirection.Down: return AxisDirection.Left;
+			case AxisDirection.Left: return AxisDirection.Up;
+			case AxisDirection.Right: return AxisDirection.Down;
+			case AxisDirection.Up: return AxisDirection.Right;
+			default: return AxisDirection.Down;
 			}
 		}
 
 		public static bool IsSameAxis(this AxisDirection a, AxisDirection b) {
-			if (a == AxisDirection.left || a == AxisDirection.right) {
-				return b == AxisDirection.right || b == AxisDirection.left;
+			if (a == AxisDirection.Left || a == AxisDirection.Right) {
+				return b == AxisDirection.Right || b == AxisDirection.Left;
 			} else {
-				return b == AxisDirection.up || b == AxisDirection.down;
+				return b == AxisDirection.Up || b == AxisDirection.Down;
 			}
 		}
 
 		public static double Angle(this AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down: return Math.PI * 0.5;
-			case AxisDirection.left: return Math.PI;
-			case AxisDirection.right: return 0;
-			case AxisDirection.up: return -Math.PI * 0.5;
+			case AxisDirection.Down: return Math.PI * 0.5;
+			case AxisDirection.Left: return Math.PI;
+			case AxisDirection.Right: return 0;
+			case AxisDirection.Up: return -Math.PI * 0.5;
 			default: return 0;
 			}
 		}
@@ -77,19 +77,19 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			x = 0;
 			y = 0;
 			switch (dir) {
-			case AxisDirection.down:
+			case AxisDirection.Down:
 				this.x = Vector.down.x;
 				this.y = Vector.down.y;
 				break;
-			case AxisDirection.left:
+			case AxisDirection.Left:
 				this.x = Vector.left.x;
 				this.y = Vector.left.y;
 				break;
-			case AxisDirection.right:
+			case AxisDirection.Right:
 				this.x = Vector.right.x;
 				this.y = Vector.right.y;
 				break;
-			case AxisDirection.up:
+			case AxisDirection.Up:
 				this.x = Vector.up.x;
 				this.y = Vector.up.y;
 				break;
@@ -103,12 +103,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		public AxisDirection Direction {
 			get {
 				if (this * Vector.up >= 0.5)
-					return AxisDirection.up;
+					return AxisDirection.Up;
 				if (this * Vector.down >= 0.5)
-					return AxisDirection.down;
+					return AxisDirection.Down;
 				if (this * Vector.left >= 0.5)
-					return AxisDirection.left;
-				return AxisDirection.right;
+					return AxisDirection.Left;
+				return AxisDirection.Right;
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return x * o.y - y * o.x;
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			Debug.FillCircle(this, 15, color);
 		}
     }
@@ -272,7 +272,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			Debug.Line(StartPoint, EndPoint, color);
 		}
 
@@ -381,7 +381,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return vec;
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			Vector lastPoint = PointAtAngle(FromAngle);
 			double angle = FromAngle;
 
@@ -455,7 +455,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return havePoint1 || havePoint2;
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			Debug.Circle(Position, Radius, color);
 		}
 
@@ -477,13 +477,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public Ray lineForDirection(AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down:
+			case AxisDirection.Down:
 				return Ray.Line(Max, new Vector(Min.x, Max.y));
-			case AxisDirection.left:
+			case AxisDirection.Left:
 				return Ray.Line(Min, new Vector(Min.x, Max.y));
-			case AxisDirection.right:
+			case AxisDirection.Right:
 				return Ray.Line(Max, new Vector(Max.x, Min.y));
-			case AxisDirection.up:
+			case AxisDirection.Up:
 				return Ray.Line(Min, new Vector(Max.x, Min.y));
 			default:
 				return Ray.Line(Min, Min);
@@ -505,7 +505,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return null;
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			/*foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				lineForDirection(dir).draw(color);
 
@@ -533,22 +533,22 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public Ray EdgeInDirection(AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down:
+			case AxisDirection.Down:
 				return Ray.Line(
 					(Position + new Vector(-Width, Height).Rotate(Angle)), 
 					(Position + new Vector(Width, Height).Rotate(Angle))
 				);
-			case AxisDirection.left:
+			case AxisDirection.Left:
 				return Ray.Line(
 					(Position + new Vector(-Width, Height).Rotate(Angle)), 
 					(Position + new Vector(-Width, -Height).Rotate(Angle))
 				);
-			case AxisDirection.right:
+			case AxisDirection.Right:
 				return Ray.Line(
 					(Position + new Vector(Width, Height).Rotate(Angle)), 
 					(Position + new Vector(Width, -Height).Rotate(Angle))
 				);
-			case AxisDirection.up:
+			case AxisDirection.Up:
 				return Ray.Line(
 					(Position + new Vector(-Width, -Height).Rotate(Angle)), 
 					(Position + new Vector(Width, -Height).Rotate(Angle))
@@ -592,7 +592,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				var edge = EdgeInDirection(dir);
 				edge.Draw(color);

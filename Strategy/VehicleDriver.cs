@@ -24,16 +24,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			strategies.AddLast(new BackupStrategy());
 		}
 
-		public void drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		public void Drive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 
 			//defaults
 			move.IsUseNitro = false;
 
 			foreach (var strategy in strategies) {
-				if (strategy.tryDrive(vehicle, tilePath, move)) {
+				if (strategy.TryDrive(vehicle, tilePath, move)) {
 
-					Debug.Print(vehicle.Position + new Vector(15, 15), strategy.GetType().Name);
+					Debug.Print(vehicle.Position + new Vector(15, 15), strategy.GetType().Name, Color.Black);
 
 					return;
 				}
@@ -45,16 +45,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public abstract class VehicleDriverStrategy {
 
-		public abstract bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
+		public abstract bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move);
 
-		public virtual void resetState() {}
+		public virtual void ResetState() {}
 	}
 
 	public class GetBackStrategy : VehicleDriverStrategy {
 
 		private int zeroSpeedTicks = 0;
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			var forceGetBack = false;
 
@@ -95,7 +95,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class LineRoadStrategy : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			var current = MyStrategy.Map.TileAt(vehicle.Position);
 
@@ -104,7 +104,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			{
 
-				dir = current.DirectionForTile(tilePath[0]) ?? AxisDirection.up;
+				dir = current.DirectionForTile(tilePath[0]) ?? AxisDirection.Up;
 
 				for (int i = 1; i < 3  && i < tilePath.Count; ++i) {
 					if (tilePath[i - 1].DirectionForTile(tilePath[i]) != dir)
@@ -164,7 +164,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class JustBeforeTurningToLineStrategy : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (tilePath.Count < 3)
 				return false;
@@ -318,7 +318,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class FromLineToTurn : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 
 			if (tilePath.Count < 3)
@@ -455,7 +455,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class SmoothDiagonalTurning : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 
 			if (tilePath.Count < 3)
@@ -510,13 +510,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				);
 
 				Circle innerCircle = new Circle(innerSide.EndPoint + turningTo * Constants.RoadMargin, Constants.RoadMargin);
-
-				side.Draw(0x00FF00);
-				back.Draw(0x00FF00);
-				backCircle.Draw(0x00FF00);
-
-				innerSide.Draw(0x00FF00);
-				innerCircle.Draw(0x00FF00);
+				
 
 				var vv = new VirtualVehicle(vehicle);
 
@@ -571,9 +565,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						move.WheelTurn = vehicle.SteeringAngleForDirection(vehicleToTarget);
 						return true;
 					}
-
-					rect.Draw(0x0000FF);
-					vv.Position.Draw(0xFF0000);
+					
 				}
 
 				move.EnginePower = 1;
@@ -611,7 +603,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class TurnBackStrategy : VehicleDriverStrategy {
 
-		public override bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		public override bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (tilePath.Count < 2)
 				return false;
@@ -651,11 +643,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 					                turningFrom * Constants.TileSize);
 
 				var innerCircle = new Circle(current.Center + (new Vector(currentToFirst) + new Vector(firstToSecond)) * Constants.TileSize * 0.5, Constants.RoadMargin);
-
-				backWall.Draw(0x00FF00);
-				backSideWall.Draw(0x00FF00);
-				innerWall.Draw(0x00FF00);
-				innerCircle.Draw(0x00FF00);
+				
 
 				var vv = new VirtualVehicle(vehicle);
 
@@ -679,9 +667,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						move.WheelTurn = steering;
 						return true;
 					}
-
-					vv.Position.Draw(0xFF0000); 
-					vv.Rect.Draw(0x0000FF);
+					
 
 				}
 			}
@@ -702,7 +688,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 	//
 	public class BeforeTurnBackStrategy : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			if (tilePath.Count < 4)
 				return false;
@@ -744,11 +730,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 	public class BackupStrategy : VehicleDriverStrategy {
 
-		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
+		override public bool TryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
 			var nextTile = tilePath[0];
-//			nextTile.draw(0xFF0000);
-//			nextTile.center.draw(0xFF1010);
 
 			if (vehicle.Forward * (nextTile.Center - vehicle.Position) < 0.4 && vehicle.Speed.Length > 10) {
 				move.IsBrake = true;

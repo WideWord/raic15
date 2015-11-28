@@ -38,7 +38,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public bool CanGoInDirection(AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.down:
+			case AxisDirection.Down:
 				switch (Type) {
 				case TileType.TopHeadedT:
 				case TileType.Empty:
@@ -50,7 +50,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				default:
 					return true;
 				}
-			case AxisDirection.up:
+			case AxisDirection.Up:
 				switch (Type) {
 				case TileType.BottomHeadedT:
 				case TileType.Empty:
@@ -63,7 +63,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 					return true;
 				}
 
-			case AxisDirection.left:
+			case AxisDirection.Left:
 				switch (Type) {
 				case TileType.Empty:
 				case TileType.Unknown:
@@ -75,7 +75,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				default:
 					return true;
 				}
-			case AxisDirection.right:
+			case AxisDirection.Right:
 				switch (Type) {
 				case TileType.Empty:
 				case TileType.Unknown:
@@ -94,13 +94,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		public Tile NextTileInDirection(AxisDirection dir) {
 			switch (dir) {
-			case AxisDirection.up:
+			case AxisDirection.Up:
 				return RoadMap.TileAt(posX, posY - 1);
-			case AxisDirection.down:
+			case AxisDirection.Down:
 				return RoadMap.TileAt(posX, posY + 1);
-			case AxisDirection.left:
+			case AxisDirection.Left:
 				return RoadMap.TileAt(posX - 1, posY);
-			case AxisDirection.right:
+			case AxisDirection.Right:
 				return RoadMap.TileAt(posX + 1, posY);
 			}
 			return null;
@@ -109,16 +109,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		public AxisDirection? DirectionForTile(Tile tile) {
 			if (tile.posX == posX) {
 				if (tile.posY > posY)
-					return AxisDirection.down;
+					return AxisDirection.Down;
 				else if (tile.posY < posY)
-					return AxisDirection.up;
+					return AxisDirection.Up;
 				else
 					return null;
 			} else if (tile.posY == posY) {
 				if (tile.posX > posX)
-					return AxisDirection.right;
+					return AxisDirection.Right;
 				else if (tile.posX < posX)
-					return AxisDirection.left;
+					return AxisDirection.Left;
 				else
 					return null;
 			} else
@@ -282,7 +282,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-		public void draw(int color) {
+		public void Draw(Color color) {
 			Rect.Draw(color);
 		}
 	}

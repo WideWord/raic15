@@ -52,9 +52,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			AxisDirection? lastDir = null;
 
 			while (true) {
-
-				if (debugDraw)
-					tile.draw(0x00FF00);
+				
 
 				var intersection = tile.Intersect(ray);
 
@@ -68,7 +66,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				if (dir == null)
 					return null;
 
-				tile = tile.NextTileInDirection(dir ?? AxisDirection.up);
+				tile = tile.NextTileInDirection(dir ?? AxisDirection.Up);
 				if (tile == null)
 					return null;
 

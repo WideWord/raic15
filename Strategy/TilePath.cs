@@ -157,7 +157,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		}
 	
 
-		public void Draw(int color) {
+		public void Draw(Color color) {
 			Tile last = null;
 
 			foreach (var tile in TileList) {

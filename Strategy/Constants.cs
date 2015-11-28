@@ -24,13 +24,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		public static double GetEnginePower(CarType carType, AxisDirection direction) {
 			if (carType == CarType.Buggy) {
-				if (direction == AxisDirection.up) {
+				if (direction == AxisDirection.Up) {
 					return BuggyEngineForwardPower;
 				} else {
 					return BuggyEngineRearPower;
 				}
 			} else {
-				if (direction == AxisDirection.up) {
+				if (direction == AxisDirection.Up) {
 					return JeepEngineForwardPower;
 				} else {
 					return JeepEngineForwardPower;
@@ -50,7 +50,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 		}
 
 		public static double GetAcceleration(CarType type, double enginePower) {
-			return GetEnginePower(type, ((enginePower > 0)?AxisDirection.up:AxisDirection.down)) / GetMass(type) * enginePower;
+			return GetEnginePower(type, ((enginePower > 0)?AxisDirection.Up:AxisDirection.Down)) / GetMass(type) * enginePower;
 		}
 
 		public static double VehicleLength { get { return game.CarWidth; } }
