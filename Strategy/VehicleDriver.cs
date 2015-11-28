@@ -33,7 +33,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			foreach (var strategy in strategies) {
 				if (strategy.tryDrive(vehicle, tilePath, move)) {
 
-					Debug.print(vehicle.position + new Vector(15, 15), strategy.GetType().Name);
+					Debug.Print(vehicle.Position + new Vector(15, 15), strategy.GetType().Name);
 
 					return;
 				}
@@ -58,8 +58,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var forceGetBack = false;
 
-			if (MyStrategy.currentTick > 180) {
-				if (vehicle.speed.length < 1) {
+			if (MyStrategy.CurrentTick > 180) {
+				if (vehicle.Speed.Length < 1) {
 					zeroSpeedTicks += 1;
 				} else {
 					zeroSpeedTicks = 0;
@@ -70,15 +70,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
                 }
             }
 
-			if (vehicle.speed.length > 5 && !forceGetBack)
+			if (vehicle.Speed.Length > 5 && !forceGetBack)
 				return false;
 
-			var target = tilePath[0].center;
+			var target = tilePath[0].Center;
 
-			if (MyStrategy.map.intersect(vehicle.forwardRay * Constants.vehicleLength * 2) != null || forceGetBack) {
+			if (MyStrategy.Map.Intersect(vehicle.ForwardRay * Constants.VehicleLength * 2) != null || forceGetBack) {
 				move.IsBrake = false;
 				move.EnginePower = -1;
-				move.WheelTurn = -vehicle.forward.angleTo(target - vehicle.position) * 4;
+				move.WheelTurn = -vehicle.Forward.AngleTo(target - vehicle.Position) * 4;
 				return true;
 			}
 
@@ -97,17 +97,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		override public bool tryDrive(Vehicle vehicle, List<Tile> tilePath, Move move) {
 
-			var current = MyStrategy.map.tileAt(vehicle.position);
+			var current = MyStrategy.Map.TileAt(vehicle.Position);
 
 
 			AxisDirection dir;
 
 			{
 
-				dir = current.directionForTile(tilePath[0]) ?? AxisDirection.up;
+				dir = current.DirectionForTile(tilePath[0]) ?? AxisDirection.up;
 
 				for (int i = 1; i < 3  && i < tilePath.Count; ++i) {
-					if (tilePath[i - 1].directionForTile(tilePath[i]) != dir)
+					if (tilePath[i - 1].DirectionForTile(tilePath[i]) != dir)
 						return false;
                 }
 			}
@@ -119,17 +119,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			int lineTilesCtr = 0;
 
 			foreach (var tile in tilePath) {
-				if (dir.turnLeft() == last.directionForTile(tile)) {
-					var turnVector = new Vector(dir.turnLeft());
-					var dist = (vehicle.position - current.center) * turnVector + 0.15 * Constants.tileSize;
-					dirVec -= turnVector * dist / Constants.tileSize;
+				if (dir.TurnLeft() == last.DirectionForTile(tile)) {
+					var turnVector = new Vector(dir.TurnLeft());
+					var dist = (vehicle.Position - current.Center) * turnVector + 0.15 * Constants.TileSize;
+					dirVec -= turnVector * dist / Constants.TileSize;
 					break;
-				} else if (dir.turnRight() == last.directionForTile(tile)) {
-					var turnVector = new Vector(dir.turnRight());
-					var dist = (vehicle.position - current.center) * turnVector + 0.15 * Constants.tileSize;
-					dirVec -= turnVector * dist / Constants.tileSize;
+				} else if (dir.TurnRight() == last.DirectionForTile(tile)) {
+					var turnVector = new Vector(dir.TurnRight());
+					var dist = (vehicle.Position - current.Center) * turnVector + 0.15 * Constants.TileSize;
+					dirVec -= turnVector * dist / Constants.TileSize;
 					break;
-				} else if (dir != last.directionForTile(tile))
+				} else if (dir != last.DirectionForTile(tile))
 					break;
 
 				lineTilesCtr += 1;
@@ -137,17 +137,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				last = tile;
 
 			}
-				
+
 			if (lineTilesCtr >= 8) {
 				move.IsUseNitro = true;
 			}
 
-			if (vehicle.forward * dirVec > 0.3) {
+			if (vehicle.Forward * dirVec > 0.3) {
 				move.EnginePower = 1;
-				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
+				move.WheelTurn = vehicle.SteeringAngleForDirection(dirVec);
 			} else {
 				move.EnginePower = 0.2;
-				move.WheelTurn = vehicle.steeringAngleForDirection(dirVec);
+				move.WheelTurn = vehicle.SteeringAngleForDirection(dirVec);
 			}
 			move.IsBrake = false;
 
@@ -169,22 +169,22 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			if (tilePath.Count < 3)
 				return false;
 
-			var currentTile = MyStrategy.map.tileAt(vehicle.position);
+			var currentTile = MyStrategy.Map.TileAt(vehicle.Position);
 
 			Vector turningTo;
 			Vector turningFrom;
 
 			{
-				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
+				var firstToSecond = tilePath[0].DirectionForTile(tilePath[1]).Value;
 
 				turningTo = new Vector(firstToSecond);
 
-				if (firstToSecond != tilePath[1].directionForTile(tilePath[2])) {
+				if (firstToSecond != tilePath[1].DirectionForTile(tilePath[2])) {
 					return false;
 				}
 
-				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
-				if (currentToFirst.isSameAxis(firstToSecond)) {
+				var currentToFirst = currentTile.DirectionForTile(tilePath[0]).Value;
+				if (currentToFirst.IsSameAxis(firstToSecond)) {
 					return false;
 				}
 
@@ -192,58 +192,58 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			}
 
-			if (vehicle.speed.length > 10) {
+			if (vehicle.Speed.Length > 10) {
 
-				var innerSide1 = Ray.line(
-					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
+				var innerSide1 = Ray.Line(
+					currentTile.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningFrom * Constants.TileSize * 0.5,
+					currentTile.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) + turningFrom * Constants.TileSize * 0.5
 				);
 
 				//innerSide1.draw(0x00FF00);
 
-				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5, Constants.roadMargin);
+				var innerCircle = new Circle(currentTile.Center + (turningTo + turningFrom) * Constants.TileSize * 0.5, Constants.RoadMargin);
 
 				//innerCircle.draw(0x00FF00);
 
-				var innerCircleExtended = new Circle(innerCircle.position, innerCircle.radius + 10);
+				var innerCircleExtended = new Circle(innerCircle.Position, innerCircle.Radius + 10);
 
-				var backWall = new Ray(tilePath[0].center  + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
-					               turningTo * Constants.tileSize * 2);
+				var backWall = new Ray(tilePath[0].Center  + turningFrom * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningTo * Constants.TileSize * 0.5,
+					               turningTo * Constants.TileSize * 2);
 
 				//backWall.draw(0x00FF00);
 	
-				if (vehicle.forward * turningFrom > 0.45) {
+				if (vehicle.Forward * turningFrom > 0.45) {
 					var vv = new VirtualVehicle(vehicle);
-					var steering = Math.Sign(turningFrom.angleTo(turningTo));
+					var steering = Math.Sign(turningFrom.AngleTo(turningTo));
 
 					for (int i = 0; i < 100; ++i) { 
-						vv.simulateTick(1.0, steering);
+						vv.SimulateTick(1.0, steering);
 
 
 
-						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircle)) {
+						if (vv.Rect.IsIntersect(innerSide1) || vv.Rect.IsIntersect(innerCircle)) {
 							move.EnginePower = 1;
-							move.WheelTurn = vehicle.steeringAngleForDirection(vehicle.stabilizationDir(turningFrom, currentTile.center, turningTo, -0.15 * Constants.tileSize));
+							move.WheelTurn = vehicle.SteeringAngleForDirection(vehicle.StabilizationDir(turningFrom, currentTile.Center, turningTo, -0.15 * Constants.TileSize));
 							move.IsBrake = false;
 							return true;
 						}
 
 
-						if (vv.rect.isIntersect(backWall)) {
+						if (vv.Rect.IsIntersect(backWall)) {
 							move.IsBrake = true;
 							move.EnginePower = 1;
 							move.WheelTurn = steering;
 							return true;
 						}
 
-						if (tilePath[1].rect.contains(vv.position)) {
+						if (tilePath[1].Rect.contains(vv.Position)) {
 
 							// защита от слишком быстрого захода в поворот и ударения в заднюю стенку
 
 							for (int j = 0; j < 50; ++j) {
 
-								vv.simulateTick(1, steering);
-								if (vv.rect.isIntersect(backWall)) {
+								vv.SimulateTick(1, steering);
+								if (vv.Rect.IsIntersect(backWall)) {
 									move.EnginePower = 1;
 									move.WheelTurn = steering;
 									move.IsBrake = true;
@@ -264,15 +264,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						//vv.position.draw(0xFF0000); 
 						//vv.rect.draw(0x0000FF);
 					}
-				} else if (vehicle.forward * turningTo > 0.5) {
+				} else if (vehicle.Forward * turningTo > 0.5) {
 					
 					var vv = new VirtualVehicle(vehicle);
-					var steering = Math.Sign(turningFrom.angleTo(turningTo));
+					var steering = Math.Sign(turningFrom.AngleTo(turningTo));
 
 					for (int i = 0; i < 100; ++i) { 
-						vv.simulateTick(1.0, 0);
+						vv.SimulateTick(1.0, 0);
 
-						if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerCircleExtended)) {
+						if (vv.Rect.IsIntersect(innerSide1) || vv.Rect.IsIntersect(innerCircleExtended)) {
 
 							move.EnginePower = 1;
 							move.WheelTurn = -steering;
@@ -280,7 +280,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 							return true;
 						}
 
-						if (tilePath[1].rect.contains(vv.position)) {
+						if (tilePath[1].Rect.contains(vv.Position)) {
 							move.EnginePower = 1;
 							move.WheelTurn = 0;
 							move.IsBrake = false;
@@ -302,7 +302,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			move.IsBrake = false;
 			move.EnginePower = 1;
 			var turn = turningTo + turningFrom;
-			move.WheelTurn = vehicle.steeringAngleForDirection(turn);
+			move.WheelTurn = vehicle.SteeringAngleForDirection(turn);
 
 			return true;
 
@@ -324,25 +324,25 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			if (tilePath.Count < 3)
 				return false;
 
-			var currentTile = MyStrategy.map.tileAt(vehicle.position);
+			var currentTile = MyStrategy.Map.TileAt(vehicle.Position);
 
 			Vector turningTo;
 			Vector turningFrom;
 
 			{
 
-				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
-				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
-				var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
+				var currentToFirst = currentTile.DirectionForTile(tilePath[0]).Value;
+				var firstToSecond = tilePath[0].DirectionForTile(tilePath[1]).Value;
+				var secondToThird = tilePath[1].DirectionForTile(tilePath[2]).Value;
 
 				if (currentToFirst != firstToSecond)
 					return false;
 
-				if (firstToSecond.isSameAxis(secondToThird))
+				if (firstToSecond.IsSameAxis(secondToThird))
 					return false;
 
 				if (tilePath.Count >= 4) {
-					if (tilePath[2].directionForTile(tilePath[3]).Value.back() == currentToFirst)
+					if (tilePath[2].DirectionForTile(tilePath[3]).Value.Back() == currentToFirst)
 						return false;
 				}
 
@@ -351,43 +351,43 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 
-			if (vehicle.speed.length > 10 && vehicle.forward * turningFrom > 0.45) {
+			if (vehicle.Speed.Length > 10 && vehicle.Forward * turningFrom > 0.45) {
 				var vv = new VirtualVehicle(vehicle);
-				var steering = Math.Sign(turningFrom.angleTo(turningTo));
+				var steering = Math.Sign(turningFrom.AngleTo(turningTo));
 
-				var innerSide1 = Ray.line(
-					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) + turningFrom * Constants.tileSize * 0.5
+				var innerSide1 = Ray.Line(
+					currentTile.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningFrom * Constants.TileSize * 0.5,
+					currentTile.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) + turningFrom * Constants.TileSize * 0.5
 				);
 
 				//innerSide1.draw(0x00FF00);
 
-				var innerSide2 = new Ray(innerSide1.position + turningFrom * Constants.tileSize, innerSide1.direction);
+				var innerSide2 = new Ray(innerSide1.Position + turningFrom * Constants.TileSize, innerSide1.Direction);
 
 				//innerSide2.draw(0x00FF00);
 
-				var innerCircle = new Circle(currentTile.center + (turningTo + turningFrom) * Constants.tileSize * 0.5 + turningFrom * Constants.tileSize, Constants.roadMargin);
+				var innerCircle = new Circle(currentTile.Center + (turningTo + turningFrom) * Constants.TileSize * 0.5 + turningFrom * Constants.TileSize, Constants.RoadMargin);
 
 				//innerCircle.draw(0x00FF00);  
 
-				var backWall = new Ray(tilePath[1].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * (Constants.tileSize * 0.5), turningTo * 2 * Constants.tileSize);
+				var backWall = new Ray(tilePath[1].Center + turningFrom * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningTo * (Constants.TileSize * 0.5), turningTo * 2 * Constants.TileSize);
 
 				//backWall.draw(0x00FF00);
 
-				var outerSide = new Ray(currentTile.center - turningTo * (Constants.halfTileSize - Constants.roadMargin) - turningFrom * Constants.halfTileSize, turningFrom * Constants.tileSize * 3);
+				var outerSide = new Ray(currentTile.Center - turningTo * (Constants.HalfTileSize - Constants.RoadMargin) - turningFrom * Constants.HalfTileSize, turningFrom * Constants.TileSize * 3);
 
 				//outerSide.draw(0x00FF00);
 
 				for (int i = 0; i < 100; ++i) { 
-					vv.simulateTick(1.0, steering);
-					if (vv.rect.isIntersect(innerSide1) || vv.rect.isIntersect(innerSide2))
+					vv.SimulateTick(1.0, steering);
+					if (vv.Rect.IsIntersect(innerSide1) || vv.Rect.IsIntersect(innerSide2))
 						break;
 
-					if (vv.rect.isIntersect(innerCircle))
+					if (vv.Rect.IsIntersect(innerCircle))
 						break;
 
-					if (vv.rect.isIntersect(outerSide)) {
-						var target = currentTile.center + turningFrom * Constants.tileSize * 1.5;
+					if (vv.Rect.IsIntersect(outerSide)) {
+						var target = currentTile.Center + turningFrom * Constants.TileSize * 1.5;
 
 						move.WheelTurn = steering;
 						move.EnginePower = 1;
@@ -396,21 +396,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					if (vv.rect.isIntersect(backWall)) {
+					if (vv.Rect.IsIntersect(backWall)) {
 						move.EnginePower = 1;
 						move.WheelTurn = steering;
 						move.IsBrake = true;
 						return true;
 					}
 
-					if (tilePath[2].rect.contains(vv.position)) {
+					if (tilePath[2].Rect.contains(vv.Position)) {
 
 						// защита от слишком быстрого захода в поворот и ударения в заднюю стенку
 
 						for (int j = 0; j < 50; ++j) {
 
-							vv.simulateTick(1, steering);
-							if (vv.rect.isIntersect(backWall)) {
+							vv.SimulateTick(1, steering);
+							if (vv.Rect.IsIntersect(backWall)) {
 								move.EnginePower = 1;
 								move.WheelTurn = steering;
 								move.IsBrake = true;
@@ -437,7 +437,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 				
 
-			move.WheelTurn = vehicle.steeringAngleForDirection((currentTile.center + turningFrom * Constants.tileSize * 1.5) - vehicle.position);
+			move.WheelTurn = vehicle.SteeringAngleForDirection((currentTile.Center + turningFrom * Constants.TileSize * 1.5) - vehicle.Position);
 			move.EnginePower = 1;
 			move.IsBrake = false;
 
@@ -461,7 +461,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			if (tilePath.Count < 3)
 				return false;
 
-			var currentTile = MyStrategy.map.tileAt(vehicle.position);
+			var currentTile = MyStrategy.Map.TileAt(vehicle.Position);
 			Vector target;
 			Vector turningFrom;
 			Vector turningTo;
@@ -469,70 +469,70 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			{
 				
 
-				var currentToFirst = currentTile.directionForTile(tilePath[0]).Value;
-				var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
-				var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
+				var currentToFirst = currentTile.DirectionForTile(tilePath[0]).Value;
+				var firstToSecond = tilePath[0].DirectionForTile(tilePath[1]).Value;
+				var secondToThird = tilePath[1].DirectionForTile(tilePath[2]).Value;
 
 				if (currentToFirst != secondToThird) {
 					return false;
 				}
 
-				if (firstToSecond.isSameAxis(currentToFirst)) {
+				if (firstToSecond.IsSameAxis(currentToFirst)) {
 					return false;
 				}
 
 				turningFrom = new Vector(currentToFirst);
 				turningTo = new Vector(firstToSecond);
 
-				target = tilePath[2].center - turningFrom * 0.5 * Constants.tileSize;
+				target = tilePath[2].Center - turningFrom * 0.5 * Constants.TileSize;
 
 			}
 
-			var vehicleToTarget = target - vehicle.position;
+			var vehicleToTarget = target - vehicle.Position;
 
 
-			if (vehicle.speed.length > 10 && vehicle.forward * (turningFrom + turningTo) > 0) {
+			if (vehicle.Speed.Length > 10 && vehicle.Forward * (turningFrom + turningTo) > 0) {
 
-				var steering = Math.Sign(turningFrom.angleTo(turningTo));
+				var steering = Math.Sign(turningFrom.AngleTo(turningTo));
 
 				Ray side = new Ray(
-					           tilePath[0].center - turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-							   turningFrom * (Constants.tileSize - Constants.roadMargin)
+					           tilePath[0].Center - turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningFrom * Constants.TileSize * 0.5,
+							   turningFrom * (Constants.TileSize - Constants.RoadMargin)
 				           );
 
-				Ray back = new Ray(side.p2, turningTo * (Constants.tileSize - Constants.roadMargin));
+				Ray back = new Ray(side.EndPoint, turningTo * (Constants.TileSize - Constants.RoadMargin));
 
-				Circle backCircle = new Circle(back.p2 + turningFrom * Constants.roadMargin, Constants.roadMargin);
+				Circle backCircle = new Circle(back.EndPoint + turningFrom * Constants.RoadMargin, Constants.RoadMargin);
 
 				Ray innerSide = new Ray(
-					currentTile.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-					turningFrom * Constants.tileSize
+					currentTile.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningFrom * Constants.TileSize * 0.5,
+					turningFrom * Constants.TileSize
 				);
 
-				Circle innerCircle = new Circle(innerSide.p2 + turningTo * Constants.roadMargin, Constants.roadMargin);
+				Circle innerCircle = new Circle(innerSide.EndPoint + turningTo * Constants.RoadMargin, Constants.RoadMargin);
 
-				side.draw(0x00FF00);
-				back.draw(0x00FF00);
-				backCircle.draw(0x00FF00);
+				side.Draw(0x00FF00);
+				back.Draw(0x00FF00);
+				backCircle.Draw(0x00FF00);
 
-				innerSide.draw(0x00FF00);
-				innerCircle.draw(0x00FF00);
+				innerSide.Draw(0x00FF00);
+				innerCircle.Draw(0x00FF00);
 
 				var vv = new VirtualVehicle(vehicle);
 
 				for (int i = 0; i < 100; ++i) {
-					vv.simulateTick(1.0, 0.0);
+					vv.SimulateTick(1.0, 0.0);
 
-					var rect = vv.rect;
+					var rect = vv.Rect;
 
-					if (rect.isIntersect(side) || rect.isIntersect(back) || rect.isIntersect(backCircle)) {
+					if (rect.IsIntersect(side) || rect.IsIntersect(back) || rect.IsIntersect(backCircle)) {
 
 						vv = new VirtualVehicle(vehicle);
 
 						for (int j = 0; j < 100; ++j) {
-							vv.simulateTick(1, steering);
+							vv.SimulateTick(1, steering);
 
-							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+							if (rect.IsIntersect(innerSide) || rect.IsIntersect(innerCircle)) {
 								move.EnginePower = 1;
 								move.IsBrake = true;
 								move.WheelTurn = steering;
@@ -544,14 +544,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						move.IsBrake = false;
 						move.WheelTurn = steering;
 						return true;
-					} else if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+					} else if (rect.IsIntersect(innerSide) || rect.IsIntersect(innerCircle)) {
 
 						vv = new VirtualVehicle(vehicle);
 
 						for (int j = 0; j < 100; ++j) {
-							vv.simulateTick(1, -steering);
+							vv.SimulateTick(1, -steering);
 
-							if (rect.isIntersect(innerSide) || rect.isIntersect(innerCircle)) {
+							if (rect.IsIntersect(innerSide) || rect.IsIntersect(innerCircle)) {
 								move.EnginePower = 1;
 								move.IsBrake = true;
 								move.WheelTurn = -steering;
@@ -565,20 +565,20 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					if (tilePath[2].rect.contains(vv.position)) {
+					if (tilePath[2].Rect.contains(vv.Position)) {
 						move.EnginePower = 1;
 						move.IsBrake = false;
-						move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
+						move.WheelTurn = vehicle.SteeringAngleForDirection(vehicleToTarget);
 						return true;
 					}
 
-					rect.draw(0x0000FF);
-					vv.position.draw(0xFF0000);
+					rect.Draw(0x0000FF);
+					vv.Position.Draw(0xFF0000);
 				}
 
 				move.EnginePower = 1;
 				move.IsBrake = false;
-				move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
+				move.WheelTurn = vehicle.SteeringAngleForDirection(vehicleToTarget);
 
 				//new Ray(vehicle.position, vehicleToTarget).draw(0x00FFFF); 
 
@@ -587,15 +587,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 
 
-			if (vehicle.forward * vehicleToTarget < 0.5) {
-				if (vehicle.speed.length > 10) {
+			if (vehicle.Forward * vehicleToTarget < 0.5) {
+				if (vehicle.Speed.Length > 10) {
 					move.IsBrake = true;
 				}
 				move.EnginePower = 0.3;
 			} else {
 				move.EnginePower = 1;
 			}
-			move.WheelTurn = vehicle.steeringAngleForDirection(vehicleToTarget);
+			move.WheelTurn = vehicle.SteeringAngleForDirection(vehicleToTarget);
 			move.IsBrake = false;
 
 			return true;
@@ -616,63 +616,63 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			if (tilePath.Count < 2)
 				return false;
 
-			var current = MyStrategy.map.tileAt(vehicle.position);
+			var current = MyStrategy.Map.TileAt(vehicle.Position);
 
-			var currentToFirst = current.directionForTile(tilePath[0]).Value;
-			var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
-			var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
+			var currentToFirst = current.DirectionForTile(tilePath[0]).Value;
+			var firstToSecond = tilePath[0].DirectionForTile(tilePath[1]).Value;
+			var secondToThird = tilePath[1].DirectionForTile(tilePath[2]).Value;
 
-			if (currentToFirst.isSameAxis(firstToSecond))
+			if (currentToFirst.IsSameAxis(firstToSecond))
 				return false;
 
-			if (currentToFirst.back() != secondToThird)
+			if (currentToFirst.Back() != secondToThird)
 				return false;
 
 
 			var turningFrom = new Vector(currentToFirst);
 			var turningTo = new Vector(firstToSecond);
 
-			if (vehicle.speed.length > 10) {
+			if (vehicle.Speed.Length > 10) {
 
-				var steering = Math.Sign(turningFrom.angleTo(turningTo));
+				var steering = Math.Sign(turningFrom.AngleTo(turningTo));
 
 
 				var backWall = new Ray(
-					tilePath[0].center + turningFrom * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningTo * Constants.tileSize * 0.5,
-					turningTo * Constants.tileSize * 2
+					tilePath[0].Center + turningFrom * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningTo * Constants.TileSize * 0.5,
+					turningTo * Constants.TileSize * 2
 				);
 
 				var backSideWall = new Ray(
-					backWall.p2 - turningTo * Constants.roadMargin,
-					-turningFrom * (Constants.tileSize - Constants.roadMargin)
+					backWall.EndPoint - turningTo * Constants.RoadMargin,
+					-turningFrom * (Constants.TileSize - Constants.RoadMargin)
 				);
 
-				var innerWall = new Ray(current.center + turningTo * (Constants.tileSize * 0.5 - Constants.roadMargin) - turningFrom * Constants.tileSize * 0.5,
-					                turningFrom * Constants.tileSize);
+				var innerWall = new Ray(current.Center + turningTo * (Constants.TileSize * 0.5 - Constants.RoadMargin) - turningFrom * Constants.TileSize * 0.5,
+					                turningFrom * Constants.TileSize);
 
-				var innerCircle = new Circle(current.center + (new Vector(currentToFirst) + new Vector(firstToSecond)) * Constants.tileSize * 0.5, Constants.roadMargin);
+				var innerCircle = new Circle(current.Center + (new Vector(currentToFirst) + new Vector(firstToSecond)) * Constants.TileSize * 0.5, Constants.RoadMargin);
 
-				backWall.draw(0x00FF00);
-				backSideWall.draw(0x00FF00);
-				innerWall.draw(0x00FF00);
-				innerCircle.draw(0x00FF00);
+				backWall.Draw(0x00FF00);
+				backSideWall.Draw(0x00FF00);
+				innerWall.Draw(0x00FF00);
+				innerCircle.Draw(0x00FF00);
 
 				var vv = new VirtualVehicle(vehicle);
 
 				for (int i = 0; i < 100; ++i) {
 
-					vv.simulateTick(0.5, steering);
+					vv.SimulateTick(0.5, steering);
 
-					var rect = vv.rect;
+					var rect = vv.Rect;
 
-					if (rect.isIntersect(innerWall) || rect.isIntersect(innerCircle)) {
+					if (rect.IsIntersect(innerWall) || rect.IsIntersect(innerCircle)) {
 						move.EnginePower = 1;
 						move.WheelTurn = -steering;
 						move.IsBrake = false;
 						return true;
 					}
 
-					if (rect.isIntersect(backWall) || rect.isIntersect(backSideWall)) {
+					if (rect.IsIntersect(backWall) || rect.IsIntersect(backSideWall)) {
 						move.IsBrake = false;
 						move.EnginePower = -1;
 						//move.WheelTurn = vehicle.steeringAngleForDirection(vehicle.stabilizationDir(turningFrom, current.center, turningTo, -0.25 * Constants.tileSize));
@@ -680,14 +680,14 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 						return true;
 					}
 
-					vv.position.draw(0xFF0000); 
-					vv.rect.draw(0x0000FF);
+					vv.Position.Draw(0xFF0000); 
+					vv.Rect.Draw(0x0000FF);
 
 				}
 			}
 
 			move.EnginePower = 0.5;
-			move.WheelTurn = vehicle.steeringAngleForDirection(vehicle.stabilizationDir(turningFrom, current.center, turningTo, -0.25 * Constants.tileSize));
+			move.WheelTurn = vehicle.SteeringAngleForDirection(vehicle.StabilizationDir(turningFrom, current.Center, turningTo, -0.25 * Constants.TileSize));
 			move.IsBrake = false;
 			return true;
 		}
@@ -707,29 +707,29 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			if (tilePath.Count < 4)
 				return false;
 
-			var current = MyStrategy.map.tileAt(vehicle.position);
+			var current = MyStrategy.Map.TileAt(vehicle.Position);
 
-			var currentToFirst = current.directionForTile(tilePath[0]).Value;
-			var firstToSecond = tilePath[0].directionForTile(tilePath[1]).Value;
-			var secondToThird = tilePath[1].directionForTile(tilePath[2]).Value;
-			var thirdToFour = tilePath[2].directionForTile(tilePath[3]).Value;
+			var currentToFirst = current.DirectionForTile(tilePath[0]).Value;
+			var firstToSecond = tilePath[0].DirectionForTile(tilePath[1]).Value;
+			var secondToThird = tilePath[1].DirectionForTile(tilePath[2]).Value;
+			var thirdToFour = tilePath[2].DirectionForTile(tilePath[3]).Value;
 
-			if (!currentToFirst.isSameAxis(firstToSecond))
+			if (!currentToFirst.IsSameAxis(firstToSecond))
 				return false;
 
-			if (firstToSecond.isSameAxis(secondToThird))
+			if (firstToSecond.IsSameAxis(secondToThird))
 				return false;
 
-			if (firstToSecond.back() != thirdToFour)
+			if (firstToSecond.Back() != thirdToFour)
 				return false;
 
 			var turningFrom = new Vector(currentToFirst);
 			var turningTo = new Vector(firstToSecond);
 
 			move.EnginePower = 1;
-			move.WheelTurn = vehicle.steeringAngleForDirection(vehicle.stabilizationDir(turningFrom, current.center, turningTo, -0.25 * Constants.tileSize));
+			move.WheelTurn = vehicle.SteeringAngleForDirection(vehicle.StabilizationDir(turningFrom, current.Center, turningTo, -0.25 * Constants.TileSize));
 
-			if (vehicle.speed.length > 15) {
+			if (vehicle.Speed.Length > 15) {
 				move.IsBrake = true;
 			} else {
 				move.IsBrake = false;
@@ -750,7 +750,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 //			nextTile.draw(0xFF0000);
 //			nextTile.center.draw(0xFF1010);
 
-			if (vehicle.forward * (nextTile.center - vehicle.position) < 0.4 && vehicle.speed.length > 10) {
+			if (vehicle.Forward * (nextTile.Center - vehicle.Position) < 0.4 && vehicle.Speed.Length > 10) {
 				move.IsBrake = true;
 				move.EnginePower = -1;
 			} else {
@@ -758,7 +758,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				move.EnginePower = 1;
 			}
 
-			move.WheelTurn = vehicle.forward.angleTo((nextTile.center - vehicle.position)) * 4;
+			move.WheelTurn = vehicle.Forward.AngleTo((nextTile.Center - vehicle.Position)) * 4;
 
 
 			return true;

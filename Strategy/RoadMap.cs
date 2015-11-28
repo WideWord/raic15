@@ -6,16 +6,16 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
     public class RoadMap {
 		
-		public int width { get; private set; }
-		public int height { get; private set; }
+		public int Width { get; private set; }
+		public int Height { get; private set; }
 
 		private Tile[,] tiles;
 
 		public RoadMap(int width, int height) {
-			this.width = width;
-			this.height = height;
+			Width = width;
+			Height = height;
 
-			tiles = new Tile[this.width, this.height];
+			tiles = new Tile[this.Width, this.Height];
 			for (int x = 0; x < width; ++x) {
 				for (int y = 0; y < height; ++y) {
 					tiles[x, y] = new Tile(this, x, y); 
@@ -23,32 +23,32 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			}
 		}
 
-		public void updateMap(TileType[][] map) {
-			for (int x = 0; x < width; ++x) {
-				for (int y = 0; y < height; ++y) {
-					tiles[x, y].type = map[x][y];
+		public void UpdateMap(TileType[][] map) {
+			for (int x = 0; x < Width; ++x) {
+				for (int y = 0; y < Height; ++y) {
+					tiles[x, y].Type = map[x][y];
 				}
 			}
 		}
 
-		public Tile tileAt(int x, int y) {
-			if (x < 0 || x >= width)
+		public Tile TileAt(int x, int y) {
+			if (x < 0 || x >= Width)
 				return null;
-			if (y < 0 || y >= height)
+			if (y < 0 || y >= Height)
 				return null;
 
 			return tiles[x, y];
 		}
 
-		public Tile tileAt(Vector position) {
-			int x = (int)Math.Floor(position.x / Constants.tileSize);
-			int y = (int)Math.Floor(position.y / Constants.tileSize);
-			return tileAt(x, y);
+		public Tile TileAt(Vector position) {
+			int x = (int)Math.Floor(position.x / Constants.TileSize);
+			int y = (int)Math.Floor(position.y / Constants.TileSize);
+			return TileAt(x, y);
 		}
 
-		public Vector? intersect(Ray ray, bool debugDraw = false) {
+		public Vector? Intersect(Ray ray, bool debugDraw = false) {
 
-			var tile = tileAt(ray.position);
+			var tile = TileAt(ray.Position);
 			AxisDirection? lastDir = null;
 
 			while (true) {
@@ -56,19 +56,19 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				if (debugDraw)
 					tile.draw(0x00FF00);
 
-				var intersection = tile.intersect(ray);
+				var intersection = tile.Intersect(ray);
 
 				if (intersection != null) {
 					return intersection;
 				}
 					
 
-				var dir = tile.rect.borderAnyIntersectionDirection(ray, (lastDir == null)?(null):(lastDir.Value.back() as AxisDirection?));
+				var dir = tile.Rect.BorderAnyIntersectionDirection(ray, (lastDir == null)?(null):(lastDir.Value.Back() as AxisDirection?));
 
 				if (dir == null)
 					return null;
 
-				tile = tile.nextTileInDirection(dir ?? AxisDirection.up);
+				tile = tile.NextTileInDirection(dir ?? AxisDirection.up);
 				if (tile == null)
 					return null;
 

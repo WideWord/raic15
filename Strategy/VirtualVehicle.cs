@@ -6,102 +6,102 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public struct VirtualVehicle {
 
-		public Vector position { get; private set; }
-		public double angle { get; private set; }
-		public Vector speed { get; private set; }
-		public double angularSpeed { get; private set; }
-		public double enginePower { get; private set; }
-		public double steeringAngle { get; private set; }
-		public CarType type { get; private set; }
+		public Vector Position { get; private set; }
+		public double Angle { get; private set; }
+		public Vector Speed { get; private set; }
+		public double AngularSpeed { get; private set; }
+		public double EnginePower { get; private set; }
+		public double SteeringAngle { get; private set; }
+		public CarType Type { get; private set; }
 
-		public Vector forward {
+		public Vector Forward {
 			get {
-				return Vector.fromAngle(angle);
+				return Vector.FromAngle(Angle);
 			}
 		}
 
-		public Ray forwardRay {
+		public Ray ForwardRay {
 			get {
-				return new Ray(position, forward);
+				return new Ray(Position, Forward);
 			}
 		}
 
-		public FreeRect rect {
+		public FreeRect Rect {
 			get {
-				return new FreeRect(position, Constants.vehicleLength, Constants.vehicleWidth, angle);
+				return new FreeRect(Position, Constants.VehicleLength, Constants.VehicleWidth, Angle);
 			}
 		}
 
 		public VirtualVehicle(Vehicle vehicle) : this() {
-			position = vehicle.position;
-			angle = vehicle.angle;
-			speed = vehicle.speed;
-			angularSpeed = vehicle.angularSpeed;
-			enginePower = vehicle.enginePower;
-			steeringAngle = vehicle.steeringAngle;
-			type = vehicle.type;
+			Position = vehicle.Position;
+			Angle = vehicle.Angle;
+			Speed = vehicle.Speed;
+			AngularSpeed = vehicle.AngularSpeed;
+			EnginePower = vehicle.EnginePower;
+			SteeringAngle = vehicle.SteeringAngle;
+			Type = vehicle.Type;
 		}
 
-		public void simulateTick(double newEnginePower, double newSteeringAngle) {
+		public void SimulateTick(double newEnginePower, double newSteeringAngle) {
 
-			var acceleration = forward * Constants.getAcceleration(type, enginePower) * Constants.physicsTickFactor;
+			var acceleration = Forward * Constants.GetAcceleration(Type, EnginePower) * Constants.PhysicsTickFactor;
 
-			var airFriction = Math.Pow(1 - Constants.vehicleMovementAirFriction, Constants.physicsTickFactor);
+			var airFriction = Math.Pow(1 - Constants.VehicleMovementAirFriction, Constants.PhysicsTickFactor);
 			//var rotFriction = Math.Pow(1 - Constants.vehicleRotationAirFriction, Constants.physicsTickFactor);
 
-			angularSpeed = Constants.vehicleAngularSpeedFactor * steeringAngle * (speed * forward);
+			AngularSpeed = Constants.VehicleAngularSpeedFactor * SteeringAngle * (Speed * Forward);
 
-			for (int i = 0; i < Constants.physicsTicks; ++i) {
-				position += speed * Constants.physicsTickFactor;
-				speed += acceleration;
-				speed *= airFriction;
+			for (int i = 0; i < Constants.PhysicsTicks; ++i) {
+				Position += Speed * Constants.PhysicsTickFactor;
+				Speed += acceleration;
+				Speed *= airFriction;
 
 				var lengthFriction =
-					Math.Max(Math.Min(speed * forward, Constants.vehicleLengthFriction * Constants.physicsTickFactor), -Constants.vehicleLengthFriction * Constants.physicsTickFactor) * forward;
+					Math.Max(Math.Min(Speed * Forward, Constants.VehicleLengthFriction * Constants.PhysicsTickFactor), -Constants.VehicleLengthFriction * Constants.PhysicsTickFactor) * Forward;
 
 				var crossFriction = 
-					Math.Max(Math.Min(speed % forward, Constants.vehicleCrossFriction * Constants.physicsTickFactor), -Constants.vehicleCrossFriction * Constants.physicsTickFactor) * forward.rotate(-Math.PI * 0.5);
+					Math.Max(Math.Min(Speed % Forward, Constants.VehicleCrossFriction * Constants.PhysicsTickFactor), -Constants.VehicleCrossFriction * Constants.PhysicsTickFactor) * Forward.Rotate(-Math.PI * 0.5);
 			
-				speed -= lengthFriction;
-				speed -= crossFriction;
+				Speed -= lengthFriction;
+				Speed -= crossFriction;
 
-				angle += angularSpeed * Constants.physicsTickFactor;
+				Angle += AngularSpeed * Constants.PhysicsTickFactor;
 			}
 
-			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower - enginePower, Constants.maxEnginePowerChange), 1.0);
-			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(newSteeringAngle - steeringAngle, Constants.maxSteeringAngleChange), 1.0);
+			EnginePower = MyMath.Limit(EnginePower + MyMath.Limit(newEnginePower - EnginePower, Constants.MaxEnginePowerChange), 1.0);
+			SteeringAngle = MyMath.Limit(SteeringAngle + MyMath.Limit(newSteeringAngle - SteeringAngle, Constants.MaxSteeringAngleChange), 1.0);
 		} 
 
-		public void simulateTickRoughly(double newEnginePower, double newSteeringAngle) {
+		public void SimulateTickRoughly(double newEnginePower, double newSteeringAngle) {
 
 			double physicsTicks = 1;
 
 			double physicsTickFactor = 1 / physicsTicks;
 
-			var acceleration = forward * Constants.getAcceleration(type, enginePower) * physicsTickFactor;
+			var acceleration = Forward * Constants.GetAcceleration(Type, EnginePower) * physicsTickFactor;
 
-			var airFriction = Math.Pow(1 - Constants.vehicleMovementAirFriction, physicsTickFactor);
+			var airFriction = Math.Pow(1 - Constants.VehicleMovementAirFriction, physicsTickFactor);
 
-			angularSpeed = Constants.vehicleAngularSpeedFactor * steeringAngle * (speed * forward) * physicsTickFactor;
+			AngularSpeed = Constants.VehicleAngularSpeedFactor * SteeringAngle * (Speed * Forward) * physicsTickFactor;
 			
-			position += speed * physicsTickFactor;
-			speed += acceleration;
-			speed *= airFriction;
+			Position += Speed * physicsTickFactor;
+			Speed += acceleration;
+			Speed *= airFriction;
 
 			var lengthFriction =
-				Math.Max(Math.Min(speed * forward, Constants.vehicleLengthFriction * physicsTickFactor), -Constants.vehicleLengthFriction * physicsTickFactor) * forward;
+				Math.Max(Math.Min(Speed * Forward, Constants.VehicleLengthFriction * physicsTickFactor), -Constants.VehicleLengthFriction * physicsTickFactor) * Forward;
 
 			var crossFriction =
-				Math.Max(Math.Min(speed % forward, Constants.vehicleCrossFriction * physicsTickFactor), -Constants.vehicleCrossFriction * physicsTickFactor) * forward.rotate(-Math.PI * 0.5);
+				Math.Max(Math.Min(Speed % Forward, Constants.VehicleCrossFriction * physicsTickFactor), -Constants.VehicleCrossFriction * physicsTickFactor) * Forward.Rotate(-Math.PI * 0.5);
 
-			speed -= lengthFriction;
-			speed -= crossFriction;
+			Speed -= lengthFriction;
+			Speed -= crossFriction;
 
-			angle += angularSpeed * physicsTickFactor;
+			Angle += AngularSpeed * physicsTickFactor;
 			
 
-			enginePower = MyMath.limit(enginePower + MyMath.limit(newEnginePower - enginePower, Constants.maxEnginePowerChange * physicsTickFactor), 1.0);
-			steeringAngle = MyMath.limit(steeringAngle + MyMath.limit(newSteeringAngle - steeringAngle, Constants.maxSteeringAngleChange * physicsTickFactor), 1.0);
+			EnginePower = MyMath.Limit(EnginePower + MyMath.Limit(newEnginePower - EnginePower, Constants.MaxEnginePowerChange * physicsTickFactor), 1.0);
+			SteeringAngle = MyMath.Limit(SteeringAngle + MyMath.Limit(newSteeringAngle - SteeringAngle, Constants.MaxSteeringAngleChange * physicsTickFactor), 1.0);
 		}
 	}
 }

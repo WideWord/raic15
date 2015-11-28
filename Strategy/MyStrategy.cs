@@ -9,37 +9,37 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		private ManagedVehicle currentVehicle;
 
-		public static RoadMap map { get; private set; }
-		public static int[][] waypoints;
-		public static Tile tileAtWaypoint(int index) {
-			index = index % waypoints.Length;
-			return map.tileAt(waypoints[index][0], waypoints[index][1]);
+		public static RoadMap Map { get; private set; }
+		public static int[][] Waypoints;
+		public static Tile TileAtWaypoint(int index) {
+			index = index % Waypoints.Length;
+			return Map.TileAt(Waypoints[index][0], Waypoints[index][1]);
 		}
 
-		public static int currentTick { get; private set; }
+		public static int CurrentTick { get; private set; }
 
 
 		public void Move(Car self, World world, Game game, Move move) {
-			Debug.beginPost();
-			Constants.setConstants(game, world);
-			currentTick = world.Tick;
+			Debug.BeginPost();
+			Constants.SetConstants(game, world);
+			CurrentTick = world.Tick;
 
 
-			if (map == null) {
-				waypoints = world.Waypoints;
-				map = new RoadMap(world.Width, world.Height);
-				map.updateMap(world.TilesXY);
+			if (Map == null) {
+				Waypoints = world.Waypoints;
+				Map = new RoadMap(world.Width, world.Height);
+				Map.UpdateMap(world.TilesXY);
 			}
 
 			if (currentVehicle == null) {
 				currentVehicle = new ManagedVehicle();
 			}
 
-			currentVehicle.setCar(self);
+			currentVehicle.SetCar(self);
 
-			currentVehicle.tick(move);
+			currentVehicle.Tick(move);
 
-			Debug.endPost();
+			Debug.EndPost();
         }
     }
 

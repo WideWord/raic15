@@ -13,35 +13,35 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		private TilePath path;
 
-		public void tick(Move move) {
+		public void Tick(Move move) {
 
-			if (MyStrategy.tileAtWaypoint(currentWaypoint + 1).rect.contains(position)) {
+			if (MyStrategy.TileAtWaypoint(currentWaypoint + 1).Rect.contains(Position)) {
 				currentWaypoint += 1;
 			}
 
-			var _currentTile = MyStrategy.map.tileAt(position);
+			var _currentTile = MyStrategy.Map.TileAt(Position);
 			if (_currentTile != currentTile) {
 				currentTile = _currentTile;
 
 				if (path == null) {
-					path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+					path = new TilePath(MyStrategy.Waypoints, MyStrategy.Map, this, currentWaypoint + 1);
 				} else {
-					if (path.tilePath[0].rect.contains(position)) {
-						path.tilePath.RemoveAt(0);
+					if (path.TileList[0].Rect.contains(Position)) {
+						path.TileList.RemoveAt(0);
 
-						if (path.tilePath.Count < 10) {
-							path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+						if (path.TileList.Count < 10) {
+							path = new TilePath(MyStrategy.Waypoints, MyStrategy.Map, this, currentWaypoint + 1);
 						}
 					} else {
-						path = new TilePath(MyStrategy.waypoints, MyStrategy.map, this, currentWaypoint + 1);
+						path = new TilePath(MyStrategy.Waypoints, MyStrategy.Map, this, currentWaypoint + 1);
 					}
 
 
 				}
 			}
 			
-			driver.drive(this, path.tilePath, move);
-			path.draw(0xFF0000);
+			driver.drive(this, path.TileList, move);
+			path.Draw(0xFF0000);
 
 
 		}	

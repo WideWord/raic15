@@ -12,15 +12,15 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		private static TcpClient client;
 		private static StreamWriter writer;
 
-		public static void connect(string host, int port) {
+		public static void Connect(string host, int port) {
 			client = new TcpClient(host, port);
 		}
 
-		public static void disconnect() {
+		public static void Disconnect() {
 			client.Close();
 		}
 
-		private static void sendCommand(string command) {
+		private static void SendCommand(string command) {
 			if (client != null) {
 				if (writer == null) {
 					writer = new StreamWriter(client.GetStream (), Encoding.ASCII);
@@ -30,23 +30,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			//System.Console.WriteLine(command);
 		}
 
-		public static void beginPre() {
-			sendCommand("begin pre");
+		public static void BeginPre() {
+			SendCommand("begin pre");
 		}
 
-		public static void beginPost() {
-			sendCommand("begin post");
+		public static void BeginPost() {
+			SendCommand("begin post");
 		}
 	
-		public static void endPre() {
-			sendCommand("end pre");
+		public static void EndPre() {
+			SendCommand("end pre");
 		}
 
-		public static void endPost() {
-			sendCommand("end post");
+		public static void EndPost() {
+			SendCommand("end post");
 		}
 
-		private static string doubleToString(double x) {
+		private static string DoubleToString(double x) {
 			return x.ToString(new System.Globalization.CultureInfo("en-US"));
 		}
 
@@ -56,38 +56,38 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			int blue = color & 0x0000FF;
 
 			return String.Format("{0} {1} {2}", 
-				doubleToString((double)red / 256.0),
-				doubleToString((double)green / 256.0),
-				doubleToString((double)blue / 256.0)
+				DoubleToString((double)red / 256.0),
+				DoubleToString((double)green / 256.0),
+				DoubleToString((double)blue / 256.0)
 				);
 		}
 
-		private static string encodeVector(Vector vec) {
-			return String.Format("{0} {1}", doubleToString(vec.x), doubleToString(vec.y));
+		private static string EncodeVector(Vector vec) {
+			return String.Format("{0} {1}", DoubleToString(vec.x), DoubleToString(vec.y));
 		}
 
-		public static void circle(Vector position, double radius, int color) {
-			sendCommand(String.Format("circle {0} {1} {2}", encodeVector(position), doubleToString(radius), encodeColor(color)));
+		public static void Circle(Vector position, double radius, int color) {
+			SendCommand(String.Format("circle {0} {1} {2}", EncodeVector(position), DoubleToString(radius), encodeColor(color)));
 		}
 
-		public static void fillCircle(Vector position, double radius, int color) {
-			sendCommand(String.Format("fill_circle {0} {1} {2}", encodeVector(position), doubleToString(radius), encodeColor(color)));
+		public static void FillCircle(Vector position, double radius, int color) {
+			SendCommand(String.Format("fill_circle {0} {1} {2}", EncodeVector(position), DoubleToString(radius), encodeColor(color)));
 		}
 
-		public static void rect(Vector p1, Vector p2, int color) {
-			sendCommand(String.Format("rect {0} {1} {2}",  encodeVector(p1), encodeVector(p2), encodeColor(color)));
+		public static void Rect(Vector p1, Vector p2, int color) {
+			SendCommand(String.Format("rect {0} {1} {2}",  EncodeVector(p1), EncodeVector(p2), encodeColor(color)));
 		}
 
-		public static void fillRect(Vector p1, Vector p2, int color) {
-			sendCommand(String.Format("fill_rect {0} {1} {2}", encodeVector(p1), encodeVector(p2), encodeColor(color)));
+		public static void FillRect(Vector p1, Vector p2, int color) {
+			SendCommand(String.Format("fill_rect {0} {1} {2}", EncodeVector(p1), EncodeVector(p2), encodeColor(color)));
 		}
 
-		public static void line(Vector p1, Vector p2, int color) {
-			sendCommand(String.Format("line {0} {1} {2}", encodeVector(p1), encodeVector(p2), encodeColor(color)));
+		public static void Line(Vector p1, Vector p2, int color) {
+			SendCommand(String.Format("line {0} {1} {2}", EncodeVector(p1), EncodeVector(p2), encodeColor(color)));
 		}
 
-		public static void print(Vector pos, string msg, int color = 0) {
-			sendCommand(String.Format("text {0} {1} {2}", encodeVector(pos), msg, encodeColor(color)));
+		public static void Print(Vector pos, string msg, int color = 0) {
+			SendCommand(String.Format("text {0} {1} {2}", EncodeVector(pos), msg, encodeColor(color)));
 		}
 			
 	}

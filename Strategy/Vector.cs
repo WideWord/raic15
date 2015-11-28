@@ -8,7 +8,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 	}
 
 	public static class AxisDirectionExtensions {
-		public static AxisDirection back(this AxisDirection dir) {
+		public static AxisDirection Back(this AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down:
 				return AxisDirection.up;
@@ -23,7 +23,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public static AxisDirection turnLeft(this AxisDirection dir) {
+		public static AxisDirection TurnLeft(this AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down: return AxisDirection.right;
 			case AxisDirection.left: return AxisDirection.down;
@@ -33,7 +33,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public static AxisDirection turnRight(this AxisDirection dir) {
+		public static AxisDirection TurnRight(this AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down: return AxisDirection.left;
 			case AxisDirection.left: return AxisDirection.up;
@@ -43,7 +43,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public static bool isSameAxis(this AxisDirection a, AxisDirection b) {
+		public static bool IsSameAxis(this AxisDirection a, AxisDirection b) {
 			if (a == AxisDirection.left || a == AxisDirection.right) {
 				return b == AxisDirection.right || b == AxisDirection.left;
 			} else {
@@ -51,7 +51,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public static double angle(this AxisDirection dir) {
+		public static double Angle(this AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down: return Math.PI * 0.5;
 			case AxisDirection.left: return Math.PI;
@@ -96,11 +96,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public static Vector fromAngle(double angle) {
+		public static Vector FromAngle(double angle) {
 			return new Vector(Math.Cos(angle), Math.Sin(angle));
 		}
 
-		public AxisDirection direction {
+		public AxisDirection Direction {
 			get {
 				if (this * Vector.up >= 0.5)
 					return AxisDirection.up;
@@ -145,29 +145,29 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
         }
 
 		public static double operator % (Vector a, Vector b) {
-			return a.cross(b);
+			return a.Cross(b);
 		}
 
-		public double length {
+		public double Length {
 			get {
 				return Math.Sqrt(x * x + y * y);
 			}
 		}
 
-		public Vector normalized {
+		public Vector Normalized {
 			get {
-				return this / this.length;
+				return this / this.Length;
 			}
 		}
 
-		public double angle {
+		public double Angle {
 			get {
 				return Math.Atan2(y, x);
 			}
 		}
 
-		public double angleTo(Vector o) {
-			double relAngle = o.angle - angle;
+		public double AngleTo(Vector o) {
+			double relAngle = o.Angle - Angle;
 			while (relAngle > Math.PI)
 				relAngle -= 2 * Math.PI;
 
@@ -177,8 +177,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return relAngle;
 		}
 
-		public Vector rotate(double deltaAngle) {
-			return Vector.fromAngle(deltaAngle + this.angle) * this.length;
+		public Vector Rotate(double deltaAngle) {
+			return Vector.FromAngle(deltaAngle + this.Angle) * this.Length;
 		}
 
 		public static Vector up = new Vector(0, -1);
@@ -193,43 +193,43 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		}
 
 
-		public double cross(Vector o) {
+		public double Cross(Vector o) {
 			return x * o.y - y * o.x;
 		}
 
-		public void draw(int color) {
-			Debug.fillCircle(this, 15, color);
+		public void Draw(int color) {
+			Debug.FillCircle(this, 15, color);
 		}
     }
 
 	public struct Ray {
 
-		public Vector position { get; private set; }
-		public Vector direction { get; private set; }
+		public Vector Position { get; private set; }
+		public Vector Direction { get; private set; }
 
-		public Vector p1 {
+		public Vector StartPoint {
 			get {
-				return position;
+				return Position;
 			}
 		}
 
-		public Vector p2 {
+		public Vector EndPoint {
 			get {
-				return position + direction;
+				return Position + Direction;
 			}
 		}
 
 		public Ray(Vector position, Vector direction) : this() {
-			this.position = position;
-			this.direction = direction;
+			this.Position = position;
+			this.Direction = direction;
 		}
 		
-		public static Ray line(Vector p1, Vector p2) {
+		public static Ray Line(Vector p1, Vector p2) {
 			return new Ray(p1, p2 - p1);
 		}
 
 		public static Ray operator * (Ray a, double val) {
-			return new Ray(a.position, a.direction * val);
+			return new Ray(a.Position, a.Direction * val);
 		}
 
 		public static Ray operator * (double val, Ray a) {
@@ -237,21 +237,21 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 		}
 
 		public static Ray operator - (Ray r) {
-			return new Ray(r.position, -r.direction);
+			return new Ray(r.Position, -r.Direction);
 		}
 
-		public Vector? intersect(Ray o) {
-			var p = position;
-			var r = direction;
+		public Vector? Intersect(Ray o) {
+			var p = Position;
+			var r = Direction;
 
-			var q = o.position;
-			var s = o.direction;
+			var q = o.Position;
+			var s = o.Direction;
 
-			if (r.cross (s) == 0) {
+			if (r.Cross (s) == 0) {
 				return null;
 			} else {
-				var t = (q - p).cross(s) / r.cross(s);
-				var u = -(p - q).cross(r) / r.cross(s);
+				var t = (q - p).Cross(s) / r.Cross(s);
+				var u = -(p - q).Cross(r) / r.Cross(s);
 
 				if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
 					return p + t * r;
@@ -261,30 +261,30 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			}
 		}
 
-		public double lineDistance(Vector p) {
+		public double LineDistance(Vector p) {
 
-			var p1 = this.p1;
-			var p2 = this.p2;
+			var p1 = this.StartPoint;
+			var p2 = this.EndPoint;
 
 			return Math.Abs((p2.y - p1.y) * p.x - (p2.x - p1.x) * p.y + p2.x * p1.y - p2.y * p1.x)
 			/
-			(p1 - p2).length;
+			(p1 - p2).Length;
 
 		}
 
-		public void draw(int color) {
-			Debug.line(p1, p2, color);
+		public void Draw(int color) {
+			Debug.Line(StartPoint, EndPoint, color);
 		}
 
 	}
 
 	public struct Arc {
 
-		public Vector position { get; private set; }
-		public double radius { get; private set; }
+		public Vector Position { get; private set; }
+		public double Radius { get; private set; }
 
-		public double fromAngle { get; private set; }
-		public double toAngle { get; private set; }
+		public double FromAngle { get; private set; }
+		public double ToAngle { get; private set; }
 
 		public Arc(Vector position, double _raduis, double fromAngle, double toAngle) : this() {
 			while (fromAngle > Math.PI)
@@ -297,36 +297,36 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			while (toAngle < -Math.PI)
 				toAngle += Math.PI * 2;
 
-			this.position = position;
-			this.radius = _raduis;
-			this.fromAngle = fromAngle;
-			this.toAngle = toAngle;
+			this.Position = position;
+			this.Radius = _raduis;
+			this.FromAngle = fromAngle;
+			this.ToAngle = toAngle;
 		}
 
-		public bool isPointInArcSector(Vector point) {
+		public bool IsPointInArcSector(Vector point) {
 
-			double angle = (point - position).angle;
+			double angle = (point - Position).Angle;
 
-			if (fromAngle > toAngle) {
-				return angle > fromAngle || angle < toAngle;
+			if (FromAngle > ToAngle) {
+				return angle > FromAngle || angle < ToAngle;
 			} else {
-				return angle < toAngle && angle > fromAngle;
+				return angle < ToAngle && angle > FromAngle;
 			}
 		}
 
-		public Vector pointAtAngle(double angle) {
-			return Vector.fromAngle(angle) * radius + position;
+		public Vector PointAtAngle(double angle) {
+			return Vector.FromAngle(angle) * Radius + Position;
 		}
 
-		public Vector[] multiIntersect(Ray ray) {
+		public Vector[] MultiIntersect(Ray ray) {
 
-			var e = ray.position;
-			var d = ray.direction;
-			var f = e - position;
+			var e = ray.Position;
+			var d = ray.Direction;
+			var f = e - Position;
 
 			var a = d * d;
 			var b = 2 * (f * d);
-			var c = (f * f) - radius * radius;
+			var c = (f * f) - Radius * Radius;
 
 			var D = b * b - 4 * a * c;
 
@@ -343,12 +343,12 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			var t1 = (-b + sD) / a2;
 			var t2 = (-b - sD) / a2;
 
-			var p1 = ray.position + ray.direction * t1;
-			var p2 = ray.position + ray.direction * t2;
+			var p1 = ray.Position + ray.Direction * t1;
+			var p2 = ray.Position + ray.Direction * t2;
 
 
-			var havePoint1 = t1 >= 0 && t1 <= 1 && isPointInArcSector(p1);
-			var havePoint2 = t2 >= 0 && t2 <= 1 && isPointInArcSector(p2);
+			var havePoint1 = t1 >= 0 && t1 <= 1 && IsPointInArcSector(p1);
+			var havePoint2 = t2 >= 0 && t2 <= 1 && IsPointInArcSector(p2);
 
 			if (havePoint1 && havePoint2) {
 				return new Vector[] { p1, p2 };
@@ -362,8 +362,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		}
 
-		public Vector? intersect(Ray ray) {
-			var intersections = multiIntersect(ray);
+		public Vector? Intersect(Ray ray) {
+			var intersections = MultiIntersect(ray);
 
 			if (intersections == null)
 				return null;
@@ -372,7 +372,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			var dist = double.MaxValue;
 
 			foreach (var intersection in intersections) {
-				var curDist = (intersection - ray.position).length;
+				var curDist = (intersection - ray.Position).Length;
 				if (curDist < dist) {
 					dist = curDist;
 					vec = intersection;
@@ -381,29 +381,29 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return vec;
 		}
 
-		public void draw(int color) {
-			Vector lastPoint = pointAtAngle(fromAngle);
-			double angle = fromAngle;
+		public void Draw(int color) {
+			Vector lastPoint = PointAtAngle(FromAngle);
+			double angle = FromAngle;
 
-			if (fromAngle > toAngle) {
+			if (FromAngle > ToAngle) {
 				while (angle < Math.PI) {
 					angle += 0.1;
-					var point = pointAtAngle(angle);
-					Debug.line(lastPoint, point, color);
+					var point = PointAtAngle(angle);
+					Debug.Line(lastPoint, point, color);
 					lastPoint = point;
 				}
 
 				angle -= Math.PI * 2;
 			}
 
-			while (angle < toAngle - 0.0001) {
-				if (angle + 0.1 > toAngle)
-					angle = toAngle;
+			while (angle < ToAngle - 0.0001) {
+				if (angle + 0.1 > ToAngle)
+					angle = ToAngle;
 				else
 					angle += 0.1;
 				
-				var point = pointAtAngle(angle);
-				Debug.line(lastPoint, point, color);
+				var point = PointAtAngle(angle);
+				Debug.Line(lastPoint, point, color);
 				lastPoint = point;
 			}
 		}
@@ -412,23 +412,23 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 	public struct Circle {
 
-		public Vector position { get; private set; }
-		public double radius { get; private set; }
+		public Vector Position { get; private set; }
+		public double Radius { get; private set; }
 
 		public Circle(Vector pos, double rad) : this() {
-			position = pos;
-			radius = rad;
+			Position = pos;
+			Radius = rad;
 		}
 
-		public bool isIntersect(Ray ray) {
+		public bool IsIntersect(Ray ray) {
 
-			var e = ray.position;
-			var d = ray.direction;
-			var f = e - position;
+			var e = ray.Position;
+			var d = ray.Direction;
+			var f = e - Position;
 
 			var a = d * d;
 			var b = 2 * (f * d);
-			var c = (f * f) - radius * radius;
+			var c = (f * f) - Radius * Radius;
 
 			var D = b * b - 4 * a * c;
 
@@ -445,8 +445,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			var t1 = (-b + sD) / a2;
 			var t2 = (-b - sD) / a2;
 
-			var p1 = ray.position + ray.direction * t1;
-			var p2 = ray.position + ray.direction * t2;
+			var p1 = ray.Position + ray.Direction * t1;
+			var p2 = ray.Position + ray.Direction * t2;
 
 
 			var havePoint1 = t1 >= 0 && t1 <= 1;
@@ -455,48 +455,48 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return havePoint1 || havePoint2;
 		}
 
-		public void draw(int color) {
-			Debug.circle(position, radius, color);
+		public void Draw(int color) {
+			Debug.Circle(Position, Radius, color);
 		}
 
 	}
 
 	public struct Rect {
 
-		public Vector min;
-		public Vector max;
+		public Vector Min;
+		public Vector Max;
 
 		public Rect(Vector a, Vector b) {
-			min = new Vector(Math.Min(a.x, b.x), Math.Min(a.y, b.y));
-			max = new Vector(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
+			Min = new Vector(Math.Min(a.x, b.x), Math.Min(a.y, b.y));
+			Max = new Vector(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
 		}
 
 		public bool contains(Vector point) {
-			return point.x <= max.x && point.x >= min.x && point.y <= max.y && point.y >= min.y;
+			return point.x <= Max.x && point.x >= Min.x && point.y <= Max.y && point.y >= Min.y;
 		}
 
 		public Ray lineForDirection(AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down:
-				return Ray.line(max, new Vector(min.x, max.y));
+				return Ray.Line(Max, new Vector(Min.x, Max.y));
 			case AxisDirection.left:
-				return Ray.line(min, new Vector(min.x, max.y));
+				return Ray.Line(Min, new Vector(Min.x, Max.y));
 			case AxisDirection.right:
-				return Ray.line(max, new Vector(max.x, min.y));
+				return Ray.Line(Max, new Vector(Max.x, Min.y));
 			case AxisDirection.up:
-				return Ray.line(min, new Vector(max.x, min.y));
+				return Ray.Line(Min, new Vector(Max.x, Min.y));
 			default:
-				return Ray.line(min, min);
+				return Ray.Line(Min, Min);
 			}
 		}
 
-		public AxisDirection? borderAnyIntersectionDirection(Ray ray, AxisDirection? exceptDir = null) {
+		public AxisDirection? BorderAnyIntersectionDirection(Ray ray, AxisDirection? exceptDir = null) {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				if (dir == exceptDir)
 					continue;
 
 				var side = lineForDirection(dir);
-				if (ray.intersect(side) != null) {
+				if (ray.Intersect(side) != null) {
 					//(ray.intersect(side) ?? new Vector(0, 0)).draw(0xFF0000);
 					return dir;
 				}
@@ -505,63 +505,63 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return null;
 		}
 
-		public void draw(int color) {
+		public void Draw(int color) {
 			/*foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				lineForDirection(dir).draw(color);
 
 			}*/
-			Debug.rect(min, max, color);				
+			Debug.Rect(Min, Max, color);				
 		}
 
 	}
 
 	public struct FreeRect {
 
-		public Vector position { get; private set; }
-		public double width { get; private set; }
-		public double height { get; private set; }
-		public double angle { get; private set; }
+		public Vector Position { get; private set; }
+		public double Width { get; private set; }
+		public double Height { get; private set; }
+		public double Angle { get; private set; }
 
-		public Vector forward { get { return Vector.fromAngle(angle); } }
+		public Vector Forward { get { return Vector.FromAngle(Angle); } }
 
 		public FreeRect(Vector pos, double width, double height, double angle) : this() {
-			position = pos;
-			this.width = width / 2;
-			this.height = height / 2;
-			this.angle = angle;
+			Position = pos;
+			this.Width = width / 2;
+			this.Height = height / 2;
+			this.Angle = angle;
 		}
 
-		public Ray edgeInDirection(AxisDirection dir) {
+		public Ray EdgeInDirection(AxisDirection dir) {
 			switch (dir) {
 			case AxisDirection.down:
-				return Ray.line(
-					(position + new Vector(-width, height).rotate(angle)), 
-					(position + new Vector(width, height).rotate(angle))
+				return Ray.Line(
+					(Position + new Vector(-Width, Height).Rotate(Angle)), 
+					(Position + new Vector(Width, Height).Rotate(Angle))
 				);
 			case AxisDirection.left:
-				return Ray.line(
-					(position + new Vector(-width, height).rotate(angle)), 
-					(position + new Vector(-width, -height).rotate(angle))
+				return Ray.Line(
+					(Position + new Vector(-Width, Height).Rotate(Angle)), 
+					(Position + new Vector(-Width, -Height).Rotate(Angle))
 				);
 			case AxisDirection.right:
-				return Ray.line(
-					(position + new Vector(width, height).rotate(angle)), 
-					(position + new Vector(width, -height).rotate(angle))
+				return Ray.Line(
+					(Position + new Vector(Width, Height).Rotate(Angle)), 
+					(Position + new Vector(Width, -Height).Rotate(Angle))
 				);
 			case AxisDirection.up:
-				return Ray.line(
-					(position + new Vector(-width, -height).rotate(angle)), 
-					(position + new Vector(width, -height).rotate(angle))
+				return Ray.Line(
+					(Position + new Vector(-Width, -Height).Rotate(Angle)), 
+					(Position + new Vector(Width, -Height).Rotate(Angle))
 				);
 			}
 			return new Ray(Vector.up, Vector.up);
 		}
 
-		public bool isIntersect(Ray ray) {
+		public bool IsIntersect(Ray ray) {
 			
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
-				var edge = edgeInDirection(dir);
-				if (ray.intersect(edge) != null) {
+				var edge = EdgeInDirection(dir);
+				if (ray.Intersect(edge) != null) {
 					return true;
 				}
 			}
@@ -569,11 +569,11 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-		public bool isIntersect(Arc arc) {
+		public bool IsIntersect(Arc arc) {
 
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
-				var edge = edgeInDirection(dir);
-				if (arc.intersect(edge) != null) {
+				var edge = EdgeInDirection(dir);
+				if (arc.Intersect(edge) != null) {
 					return true;
 				}
 			}
@@ -581,10 +581,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-		public bool isIntersect(Circle circle) {
+		public bool IsIntersect(Circle circle) {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
-				var edge = edgeInDirection(dir);
-				if (circle.isIntersect(edge)) {
+				var edge = EdgeInDirection(dir);
+				if (circle.IsIntersect(edge)) {
 					return true;
 				}
 			}
@@ -592,10 +592,10 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
-		public void draw(int color) {
+		public void Draw(int color) {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
-				var edge = edgeInDirection(dir);
-				edge.draw(color);
+				var edge = EdgeInDirection(dir);
+				edge.Draw(color);
 			}
 		}
 
@@ -603,7 +603,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 	public struct MyMath {
 
-		public static double limit(double val, double limit) {
+		public static double Limit(double val, double limit) {
 			return Math.Max(Math.Min(val, limit), -limit);
 		}
 

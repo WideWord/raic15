@@ -7,68 +7,68 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		private Car car;
 
-		public void setCar(Car car) {
+		public void SetCar(Car car) {
 			this.car = car;
 		}
 
-		public Vector position {
+		public Vector Position {
 			get {
 				return new Vector(car.X, car.Y);
 			}
 		}
 
-		public double angle {
+		public double Angle {
 			get {
 				return car.Angle;
 			}
 		}
 
-		public double angularSpeed {
+		public double AngularSpeed {
 			get {
 				return car.AngularSpeed;
 			}
 		}
 
-		public Vector forward {
+		public Vector Forward {
 			get {
-				return Vector.fromAngle(angle);
+				return Vector.FromAngle(Angle);
 			}
 		}
 
-		public Vector speed {
+		public Vector Speed {
 			get {
 				return new Vector(car.SpeedX, car.SpeedY);
 			}
 		}
 
-		public double enginePower {
+		public double EnginePower {
 			get {
 				return car.EnginePower;
 			}
 		}
 
-		public double steeringAngle {
+		public double SteeringAngle {
 			get {
 				return car.WheelTurn;
 			}
 		}
 
-		public Ray forwardRay {
+		public Ray ForwardRay {
 			get {
-				return new Ray(position, forward);
+				return new Ray(Position, Forward);
 			}
 		}
 
-		public double steeringAngleForDirection(Vector direction) {
-			return forward.angleTo(direction) * 4 * Math.Sign(speed * forward);
+		public double SteeringAngleForDirection(Vector direction) {
+			return Forward.AngleTo(direction) * 4 * Math.Sign(Speed * Forward);
 		}
 
-		public Vector stabilizationDir(Vector baseDir, Vector sideCenter, Vector sideDir, double sidePosition) {
-			var dist = (position - sideCenter) * sideDir + sidePosition;
-			return baseDir - sideDir * dist / Constants.tileSize;
+		public Vector StabilizationDir(Vector baseDir, Vector sideCenter, Vector sideDir, double sidePosition) {
+			var dist = (Position - sideCenter) * sideDir + sidePosition;
+			return baseDir - sideDir * dist / Constants.TileSize;
 		}
 
-		public CarType type {
+		public CarType Type {
 			get {
 				return car.Type;
 			}

@@ -5,75 +5,74 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 {
 	public static class Constants {
 
-		public static readonly double turningSmoothCoef = 0.5;
-		public static readonly double roadMargin = 80.0;
+		public static readonly double RoadMargin = 80.0;
 
-		public static double halfTileSize { get { return tileSize * 0.5; } }
+		public static double HalfTileSize { get { return TileSize * 0.5; } }
 
-		public static readonly int physicsTicks = 10;
-		public static readonly double physicsTickFactor = 1.0 / (double)physicsTicks;
+		public static readonly int PhysicsTicks = 10;
+		public static readonly double PhysicsTickFactor = 1.0 / (double)PhysicsTicks;
 
 		private static Game game;
 		private static World world;
 
-		public static double tileSize { get { return game.TrackTileSize; } }
+		public static double TileSize { get { return game.TrackTileSize; } }
 
-		public static double buggyEngineForwardPower { get { return game.BuggyEngineForwardPower; } }
-		public static double jeepEngineForwardPower { get { return game.JeepEngineForwardPower; } }
-		public static double buggyEngineRearPower { get { return game.BuggyEngineRearPower; } }
-		public static double jeepEngineRearPower { get { return game.JeepEngineRearPower; } }
+		public static double BuggyEngineForwardPower { get { return game.BuggyEngineForwardPower; } }
+		public static double JeepEngineForwardPower { get { return game.JeepEngineForwardPower; } }
+		public static double BuggyEngineRearPower { get { return game.BuggyEngineRearPower; } }
+		public static double JeepEngineRearPower { get { return game.JeepEngineRearPower; } }
 
-		public static double getEnginePower(CarType carType, AxisDirection direction) {
+		public static double GetEnginePower(CarType carType, AxisDirection direction) {
 			if (carType == CarType.Buggy) {
 				if (direction == AxisDirection.up) {
-					return buggyEngineForwardPower;
+					return BuggyEngineForwardPower;
 				} else {
-					return buggyEngineRearPower;
+					return BuggyEngineRearPower;
 				}
 			} else {
 				if (direction == AxisDirection.up) {
-					return jeepEngineForwardPower;
+					return JeepEngineForwardPower;
 				} else {
-					return jeepEngineForwardPower;
+					return JeepEngineForwardPower;
 				}
 			}
 		}
 
-		public static double buggyMass { get { return game.BuggyMass; } }
-		public static double jeepMass { get { return game.JeepMass; } }
+		public static double BuggyMass { get { return game.BuggyMass; } }
+		public static double JeepMass { get { return game.JeepMass; } }
 
-		public static double getMass(CarType carType) {
+		public static double GetMass(CarType carType) {
 			if (carType == CarType.Buggy) {
-				return buggyMass;
+				return BuggyMass;
 			} else {
-				return jeepMass;
+				return JeepMass;
 			}
 		}
 
-		public static double getAcceleration(CarType type, double enginePower) {
-			return getEnginePower(type, ((enginePower > 0)?AxisDirection.up:AxisDirection.down)) / getMass(type) * enginePower;
+		public static double GetAcceleration(CarType type, double enginePower) {
+			return GetEnginePower(type, ((enginePower > 0)?AxisDirection.up:AxisDirection.down)) / GetMass(type) * enginePower;
 		}
 
-		public static double vehicleLength { get { return game.CarWidth; } }
-		public static double vehicleWidth { get { return game.CarHeight; } }
+		public static double VehicleLength { get { return game.CarWidth; } }
+		public static double VehicleWidth { get { return game.CarHeight; } }
 
-		public static double vehicleMovementAirFriction {
+		public static double VehicleMovementAirFriction {
 			get {
 				return game.CarMovementAirFrictionFactor;
 			}
 		}
 
-		public static double vehicleRotationAirFriction { get { return game.CarRotationAirFrictionFactor; } }
+		public static double VehicleRotationAirFriction { get { return game.CarRotationAirFrictionFactor; } }
 
-		public static double vehicleLengthFriction { get { return game.CarLengthwiseMovementFrictionFactor; } }
-		public static double vehicleCrossFriction { get { return game.CarCrosswiseMovementFrictionFactor; } }
+		public static double VehicleLengthFriction { get { return game.CarLengthwiseMovementFrictionFactor; } }
+		public static double VehicleCrossFriction { get { return game.CarCrosswiseMovementFrictionFactor; } }
 
-		public static double maxEnginePowerChange { get { return game.CarEnginePowerChangePerTick; } }
-		public static double maxSteeringAngleChange { get { return game.CarWheelTurnChangePerTick; } }
+		public static double MaxEnginePowerChange { get { return game.CarEnginePowerChangePerTick; } }
+		public static double MaxSteeringAngleChange { get { return game.CarWheelTurnChangePerTick; } }
 
-		public static double vehicleAngularSpeedFactor { get { return game.CarAngularSpeedFactor; } }
+		public static double VehicleAngularSpeedFactor { get { return game.CarAngularSpeedFactor; } }
 
-		public static void setConstants(Game _game, World _world) {
+		public static void SetConstants(Game _game, World _world) {
 			game = _game;
 			world = _world;
 		}
