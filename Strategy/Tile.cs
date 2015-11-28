@@ -125,6 +125,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				return null;
 		}
 
+		private DistanceMap cachedDistanceMap;
+
+		public DistanceMap DistanceMap {
+			get {
+				if (cachedDistanceMap == null) {
+					cachedDistanceMap = new DistanceMap(this);
+				}
+				return cachedDistanceMap;
+			}
+		}
+
 		void GetEdges(LinkedList<Ray> rays, LinkedList<Arc> arcs) {
 
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {

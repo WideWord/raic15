@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
-	class DistanceMap {
+	public class DistanceMap {
 
 		private double[,] distances;
 
@@ -49,7 +49,9 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 
 		}
 
-
+		public double DistanceFor(Tile tile) {
+			return distances[tile.posX, tile.posY];
+		}
 
 	}
 }

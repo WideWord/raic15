@@ -13,6 +13,8 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 		private TilePath path;
 
+		private BFVehicleDriver bfDriver = new BFVehicleDriver();
+
 		public void Tick(Move move) {
 
 			if (MyStrategy.TileAtWaypoint(currentWaypoint + 1).Rect.contains(Position)) {
@@ -40,10 +42,13 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				}
 			}
 			
-			driver.Drive(this, path.TileList, move);
-			path.Draw(Color.Red);
+			//driver.Drive(this, path.TileList, move);
+			//path.Draw(Color.Red);
 
-
+			if (MyStrategy.CurrentTick > 180) {
+				var m = bfDriver.Drive(this, MyStrategy.TileAtWaypoint(currentWaypoint + 1));
+				m.Apply(move);
+			}
 		}	
 
 	}

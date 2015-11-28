@@ -75,7 +75,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 
 			var target = tilePath[0].Center;
 
-			if (MyStrategy.Map.Intersect(vehicle.ForwardRay * Constants.VehicleLength * 2) != null || forceGetBack) {
+			if (MyStrategy.Map.IsIntersect(vehicle.ForwardRay * Constants.VehicleLength * 2) || forceGetBack) {
 				move.IsBrake = false;
 				move.EnginePower = -1;
 				move.WheelTurn = -vehicle.Forward.AngleTo(target - vehicle.Position) * 4;

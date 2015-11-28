@@ -592,6 +592,17 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 			return false;
 		}
 
+		public bool IsIntersect(RoadMap map) {
+			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
+				var edge = EdgeInDirection(dir);
+				if (map.IsIntersect(edge)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public void Draw(Color color) {
 			foreach (AxisDirection dir in Enum.GetValues(typeof(AxisDirection))) {
 				var edge = EdgeInDirection(dir);

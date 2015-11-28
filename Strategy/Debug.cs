@@ -57,7 +57,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk {
 				}
 				writer.WriteLine("end pre");
 				writer.WriteLine("begin post");
-				foreach (var msg in preMessages) {
+				foreach (var msg in postMessages) {
 					writer.WriteLine(msg);
 				}
 				writer.WriteLine("end post");

@@ -46,7 +46,7 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 			return TileAt(x, y);
 		}
 
-		public Vector? Intersect(Ray ray, bool debugDraw = false) {
+		public bool IsIntersect(Ray ray, bool debugDraw = false) {
 
 			var tile = TileAt(ray.Position);
 			AxisDirection? lastDir = null;
@@ -57,23 +57,24 @@ namespace Com.CodeGame.CodeRacing2015.DevKit.CSharpCgdk
 				var intersection = tile.Intersect(ray);
 
 				if (intersection != null) {
-					return intersection;
+					return true;
 				}
 					
 
 				var dir = tile.Rect.BorderAnyIntersectionDirection(ray, (lastDir == null)?(null):(lastDir.Value.Back() as AxisDirection?));
 
 				if (dir == null)
-					return null;
+					return false;
 
 				tile = tile.NextTileInDirection(dir ?? AxisDirection.Up);
 				if (tile == null)
-					return null;
+					return false;
 
 				lastDir = dir;
 
 			}
 		}
+
 
     }
 }
